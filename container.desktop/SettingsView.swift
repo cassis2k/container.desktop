@@ -85,7 +85,7 @@ final class SettingsViewModel {
 
 struct EditableSettingRow: View {
     let title: LocalizedStringKey
-    let titleKey: String
+    let localizedTitle: String
     let description: LocalizedStringKey
     let placeholder: String
     @Binding var value: String
@@ -94,13 +94,17 @@ struct EditableSettingRow: View {
     @State private var isEditing = false
     @State private var editedValue = ""
 
+    private var displayValue: String {
+        value.isEmpty ? String(localized: "settings.notDefined") : value
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text(title)
                     .font(.title3)
                 Spacer()
-                Text(value.isEmpty ? String(localized: "settings.notDefined") : value)
+                Text(displayValue)
                     .font(.system(.body, design: .monospaced))
                     .foregroundStyle(.secondary)
                     .italic(value.isEmpty)
@@ -127,7 +131,7 @@ struct EditableSettingRow: View {
         }
         .sheet(isPresented: $isEditing) {
             VStack(spacing: 20) {
-                Text("settings.edit.title \(String(localized: String.LocalizationValue(titleKey)))")
+                Text("settings.edit.title \(localizedTitle)")
                     .font(.title2)
 
                 TextField(placeholder, text: $editedValue)
@@ -256,7 +260,7 @@ struct SettingsView: View {
             Section("settings.section.registry") {
                 EditableSettingRow(
                     title: "settings.registry.domain",
-                    titleKey: "settings.registry.domain",
+                    localizedTitle: String(localized: "settings.registry.domain"),
                     description: "settings.registry.domain.description",
                     placeholder: "docker.io",
                     value: $viewModel.registryDomain
@@ -268,7 +272,7 @@ struct SettingsView: View {
             Section("settings.section.dns") {
                 EditableSettingRow(
                     title: "settings.dns.domain",
-                    titleKey: "settings.dns.domain",
+                    localizedTitle: String(localized: "settings.dns.domain"),
                     description: "settings.dns.domain.description",
                     placeholder: "local",
                     value: $viewModel.dnsDomain
@@ -280,7 +284,7 @@ struct SettingsView: View {
             Section("settings.section.images") {
                 EditableSettingRow(
                     title: "settings.images.builder",
-                    titleKey: "settings.images.builder",
+                    localizedTitle: String(localized: "settings.images.builder"),
                     description: "settings.images.builder.description",
                     placeholder: "ghcr.io/apple/container/builder",
                     value: $viewModel.imageBuilder
@@ -290,7 +294,7 @@ struct SettingsView: View {
 
                 EditableSettingRow(
                     title: "settings.images.init",
-                    titleKey: "settings.images.init",
+                    localizedTitle: String(localized: "settings.images.init"),
                     description: "settings.images.init.description",
                     placeholder: "ghcr.io/apple/container/init",
                     value: $viewModel.imageInit
@@ -302,7 +306,7 @@ struct SettingsView: View {
             Section("settings.section.kernel") {
                 EditableSettingRow(
                     title: "settings.kernel.url",
-                    titleKey: "settings.kernel.url",
+                    localizedTitle: String(localized: "settings.kernel.url"),
                     description: "settings.kernel.url.description",
                     placeholder: "https://...",
                     value: $viewModel.kernelURL
@@ -312,7 +316,7 @@ struct SettingsView: View {
 
                 EditableSettingRow(
                     title: "settings.kernel.binaryPath",
-                    titleKey: "settings.kernel.binaryPath",
+                    localizedTitle: String(localized: "settings.kernel.binaryPath"),
                     description: "settings.kernel.binaryPath.description",
                     placeholder: "vmlinux",
                     value: $viewModel.kernelBinaryPath
