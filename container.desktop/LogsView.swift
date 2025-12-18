@@ -5,64 +5,13 @@
 
 import SwiftUI
 
-struct LogsView: View {
-    @State private var logs: String = ""
-    @State private var isLoading: Bool = true
-    @State private var errorMessage: String?
+@Observable
+final class LogsViewModel {
+    var logs: String = ""
+    var isLoading: Bool = true
+    var errorMessage: String?
 
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text("logs.title")
-                    .font(.headline)
-                Spacer()
-                Button {
-                    Task {
-                        await loadLogs()
-                    }
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                }
-                .buttonStyle(.borderless)
-                .help(Text("logs.refresh"))
-            }
-            .padding()
-
-            Divider()
-
-            if isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = errorMessage {
-                ContentUnavailableView(
-                    "common.error",
-                    systemImage: "exclamationmark.triangle",
-                    description: Text(error)
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if logs.isEmpty {
-                ContentUnavailableView(
-                    "logs.noLogs",
-                    systemImage: "doc.text",
-                    description: Text("logs.noLogsDescription")
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ScrollView {
-                    Text(logs)
-                        .font(.system(.caption, design: .monospaced))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .textSelection(.enabled)
-                }
-            }
-        }
-        .task {
-            await loadLogs()
-        }
-    }
-
-    private func loadLogs() async {
+    func loadLogs() async {
         isLoading = true
         errorMessage = nil
 
@@ -77,6 +26,62 @@ struct LogsView: View {
         }
 
         isLoading = false
+    }
+}
+
+struct LogsView: View {
+    @State private var viewModel = LogsViewModel()
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text("logs.title")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    Task {
+                        await viewModel.loadLogs()
+                    }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .buttonStyle(.borderless)
+                .help(Text("logs.refresh"))
+            }
+            .padding()
+
+            Divider()
+
+            if viewModel.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let error = viewModel.errorMessage {
+                ContentUnavailableView(
+                    "common.error",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(error)
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if viewModel.logs.isEmpty {
+                ContentUnavailableView(
+                    "logs.noLogs",
+                    systemImage: "doc.text",
+                    description: Text("logs.noLogsDescription")
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    Text(viewModel.logs)
+                        .font(.system(.caption, design: .monospaced))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .textSelection(.enabled)
+                }
+            }
+        }
+        .task {
+            await viewModel.loadLogs()
+        }
     }
 }
 

@@ -8,6 +8,81 @@
 import SwiftUI
 import ContainerPersistence
 
+@Observable
+final class SettingsViewModel {
+    // Build settings
+    var buildRosetta: Bool = true
+
+    // Domain settings
+    var dnsDomain: String = ""
+    var registryDomain: String = ""
+
+    // Image settings
+    var imageBuilder: String = ""
+    var imageInit: String = ""
+
+    // Kernel settings
+    var kernelBinaryPath: String = ""
+    var kernelURL: String = ""
+
+    // Application info
+    var appVersion: String = ""
+    var appDataRoot: String = ""
+    var appInstallRoot: String = ""
+
+    // Update info
+    var latestVersion: String = ""
+    var updateAvailable: Bool = false
+
+    func loadSettings() async {
+        loadPropertyList()
+        await loadSystemStatus()
+        await checkForUpdates()
+    }
+
+    private func loadPropertyList() {
+        buildRosetta = DefaultsStore.getBool(key: .buildRosetta) ?? true
+        dnsDomain = DefaultsStore.getOptional(key: .defaultDNSDomain) ?? ""
+        imageBuilder = DefaultsStore.get(key: .defaultBuilderImage)
+        imageInit = DefaultsStore.get(key: .defaultInitImage)
+        kernelBinaryPath = DefaultsStore.get(key: .defaultKernelBinaryPath)
+        kernelURL = DefaultsStore.get(key: .defaultKernelURL)
+        registryDomain = DefaultsStore.get(key: .defaultRegistryDomain)
+    }
+
+    private func loadSystemStatus() async {
+        let status = await ContainerService.fetchSystemStatus()
+        appVersion = status.version
+        appDataRoot = status.dataRoot.isEmpty ? String(localized: "settings.unableToRetrieve") : status.dataRoot
+        appInstallRoot = status.installRoot.isEmpty ? String(localized: "settings.unableToRetrieve") : status.installRoot
+    }
+
+    private func checkForUpdates() async {
+        let result = await ContainerService.checkForUpdates()
+
+        switch result {
+        case .success(let updateInfo):
+            latestVersion = updateInfo.latestVersion
+            updateAvailable = updateInfo.updateAvailable
+        case .failure:
+            latestVersion = ""
+            updateAvailable = false
+        }
+    }
+
+    func saveProperty(key: DefaultsStore.Keys, value: String) {
+        if value.isEmpty {
+            DefaultsStore.unset(key: key)
+        } else {
+            DefaultsStore.set(value: value, key: key)
+        }
+    }
+
+    func saveBoolProperty(key: DefaultsStore.Keys, value: Bool) {
+        DefaultsStore.setBool(value: value, key: key)
+    }
+}
+
 struct EditableSettingRow: View {
     let title: LocalizedStringKey
     let titleKey: String
@@ -119,34 +194,22 @@ struct SettingRow<Content: View>: View {
 }
 
 struct SettingsView: View {
-    @State private var buildRosetta: Bool = true
-    @State private var dnsDomain: String = ""
-    @State private var imageBuilder: String = ""
-    @State private var imageInit: String = ""
-    @State private var kernelBinaryPath: String = ""
-    @State private var kernelURL: String = ""
-    @State private var registryDomain: String = ""
-
-    @State private var appVersion: String = ""
-    @State private var appDataRoot: String = ""
-    @State private var appInstallRoot: String = ""
-    @State private var latestVersion: String = ""
-    @State private var updateAvailable: Bool = false
+    @State private var viewModel = SettingsViewModel()
 
     var body: some View {
         Form {
             Section("settings.section.application") {
                 SettingRow(
                     title: "settings.version",
-                    description: updateAvailable
-                        ? "settings.version.updateAvailable \(latestVersion)"
+                    description: viewModel.updateAvailable
+                        ? "settings.version.updateAvailable \(viewModel.latestVersion)"
                         : "settings.version.description"
                 ) {
                     HStack(spacing: 6) {
-                        Text(appVersion)
+                        Text(viewModel.appVersion)
                             .font(.system(.body, design: .monospaced))
                             .foregroundStyle(.secondary)
-                        if updateAvailable {
+                        if viewModel.updateAvailable {
                             Circle()
                                 .fill(.yellow)
                                 .frame(width: 8, height: 8)
@@ -158,7 +221,7 @@ struct SettingsView: View {
                     title: "settings.dataRoot",
                     description: "settings.dataRoot.description"
                 ) {
-                    Text(appDataRoot)
+                    Text(viewModel.appDataRoot)
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -169,7 +232,7 @@ struct SettingsView: View {
                     title: "settings.installRoot",
                     description: "settings.installRoot.description"
                 ) {
-                    Text(appInstallRoot)
+                    Text(viewModel.appInstallRoot)
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -182,10 +245,10 @@ struct SettingsView: View {
                     title: "settings.rosetta",
                     description: "settings.rosetta.description"
                 ) {
-                    Toggle("", isOn: $buildRosetta)
+                    Toggle("", isOn: $viewModel.buildRosetta)
                         .labelsHidden()
-                        .onChange(of: buildRosetta) { _, newValue in
-                            saveBoolProperty(key: .buildRosetta, value: newValue)
+                        .onChange(of: viewModel.buildRosetta) { _, newValue in
+                            viewModel.saveBoolProperty(key: .buildRosetta, value: newValue)
                         }
                 }
             }
@@ -196,9 +259,9 @@ struct SettingsView: View {
                     titleKey: "settings.registry.domain",
                     description: "settings.registry.domain.description",
                     placeholder: "docker.io",
-                    value: $registryDomain
+                    value: $viewModel.registryDomain
                 ) { newValue in
-                    saveProperty(key: .defaultRegistryDomain, value: newValue)
+                    viewModel.saveProperty(key: .defaultRegistryDomain, value: newValue)
                 }
             }
 
@@ -208,9 +271,9 @@ struct SettingsView: View {
                     titleKey: "settings.dns.domain",
                     description: "settings.dns.domain.description",
                     placeholder: "local",
-                    value: $dnsDomain
+                    value: $viewModel.dnsDomain
                 ) { newValue in
-                    saveProperty(key: .defaultDNSDomain, value: newValue)
+                    viewModel.saveProperty(key: .defaultDNSDomain, value: newValue)
                 }
             }
 
@@ -220,9 +283,9 @@ struct SettingsView: View {
                     titleKey: "settings.images.builder",
                     description: "settings.images.builder.description",
                     placeholder: "ghcr.io/apple/container/builder",
-                    value: $imageBuilder
+                    value: $viewModel.imageBuilder
                 ) { newValue in
-                    saveProperty(key: .defaultBuilderImage, value: newValue)
+                    viewModel.saveProperty(key: .defaultBuilderImage, value: newValue)
                 }
 
                 EditableSettingRow(
@@ -230,9 +293,9 @@ struct SettingsView: View {
                     titleKey: "settings.images.init",
                     description: "settings.images.init.description",
                     placeholder: "ghcr.io/apple/container/init",
-                    value: $imageInit
+                    value: $viewModel.imageInit
                 ) { newValue in
-                    saveProperty(key: .defaultInitImage, value: newValue)
+                    viewModel.saveProperty(key: .defaultInitImage, value: newValue)
                 }
             }
 
@@ -242,9 +305,9 @@ struct SettingsView: View {
                     titleKey: "settings.kernel.url",
                     description: "settings.kernel.url.description",
                     placeholder: "https://...",
-                    value: $kernelURL
+                    value: $viewModel.kernelURL
                 ) { newValue in
-                    saveProperty(key: .defaultKernelURL, value: newValue)
+                    viewModel.saveProperty(key: .defaultKernelURL, value: newValue)
                 }
 
                 EditableSettingRow(
@@ -252,65 +315,16 @@ struct SettingsView: View {
                     titleKey: "settings.kernel.binaryPath",
                     description: "settings.kernel.binaryPath.description",
                     placeholder: "vmlinux",
-                    value: $kernelBinaryPath
+                    value: $viewModel.kernelBinaryPath
                 ) { newValue in
-                    saveProperty(key: .defaultKernelBinaryPath, value: newValue)
+                    viewModel.saveProperty(key: .defaultKernelBinaryPath, value: newValue)
                 }
             }
         }
         .formStyle(.grouped)
         .frame(minWidth: 500, minHeight: 600)
         .task {
-            await loadSettings()
-        }
-    }
-
-    private func loadSettings() async {
-        loadPropertyList()
-        await loadSystemStatus()
-        await checkForUpdates()
-    }
-
-    private func loadPropertyList() {
-        buildRosetta = DefaultsStore.getBool(key: .buildRosetta) ?? true
-        dnsDomain = DefaultsStore.getOptional(key: .defaultDNSDomain) ?? ""
-        imageBuilder = DefaultsStore.get(key: .defaultBuilderImage)
-        imageInit = DefaultsStore.get(key: .defaultInitImage)
-        kernelBinaryPath = DefaultsStore.get(key: .defaultKernelBinaryPath)
-        kernelURL = DefaultsStore.get(key: .defaultKernelURL)
-        registryDomain = DefaultsStore.get(key: .defaultRegistryDomain)
-    }
-
-    private func loadSystemStatus() async {
-        let status = await ContainerService.fetchSystemStatus()
-        appVersion = status.version
-        appDataRoot = status.dataRoot.isEmpty ? String(localized: "settings.unableToRetrieve") : status.dataRoot
-        appInstallRoot = status.installRoot.isEmpty ? String(localized: "settings.unableToRetrieve") : status.installRoot
-    }
-
-    private func saveProperty(key: DefaultsStore.Keys, value: String) {
-        if value.isEmpty {
-            DefaultsStore.unset(key: key)
-        } else {
-            DefaultsStore.set(value: value, key: key)
-        }
-    }
-
-    private func saveBoolProperty(key: DefaultsStore.Keys, value: Bool) {
-        DefaultsStore.setBool(value: value, key: key)
-    }
-
-    private func checkForUpdates() async {
-        let result = await ContainerService.checkForUpdates()
-
-        switch result {
-        case .success(let updateInfo):
-            latestVersion = updateInfo.latestVersion
-            updateAvailable = updateInfo.updateAvailable
-        case .failure:
-            // Version check failed silently - not critical for UX
-            latestVersion = ""
-            updateAvailable = false
+            await viewModel.loadSettings()
         }
     }
 }
