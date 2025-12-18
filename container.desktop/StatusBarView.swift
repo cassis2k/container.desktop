@@ -5,17 +5,39 @@
 
 import SwiftUI
 
+enum ServiceState {
+    case notInstalled
+    case stopped
+    case running
+
+    var color: Color {
+        switch self {
+        case .notInstalled: return .orange
+        case .stopped: return .red
+        case .running: return .green
+        }
+    }
+
+    var labelKey: LocalizedStringKey {
+        switch self {
+        case .notInstalled: return "status.notInstalled"
+        case .stopped: return "status.stopped"
+        case .running: return "status.running"
+        }
+    }
+}
+
 struct StatusBarView: View {
-    @State private var isContainerServiceRunning: Bool = false
+    @State private var serviceState: ServiceState = .stopped
 
     var body: some View {
         HStack {
             Circle()
-                .fill(isContainerServiceRunning ? .green : .red)
+                .fill(serviceState.color)
                 .frame(width: 8, height: 8)
-            Text(isContainerServiceRunning ? "status.running" : "status.stopped")
+            Text(serviceState.labelKey)
                 .font(.caption)
-                .foregroundStyle(isContainerServiceRunning ? .green : .red)
+                .foregroundStyle(serviceState.color)
             Spacer()
         }
         .padding(.horizontal, 14)
@@ -27,10 +49,8 @@ struct StatusBarView: View {
     }
 
     private func pollContainerServiceStatus() async {
-        // Initial check
         await checkContainerServiceStatus()
 
-        // Poll every 5 seconds - automatically cancelled when view disappears
         while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(5))
             if !Task.isCancelled {
@@ -41,7 +61,14 @@ struct StatusBarView: View {
 
     private func checkContainerServiceStatus() async {
         let status = await ContainerService.fetchSystemStatus()
-        isContainerServiceRunning = status.isRunning
+
+        if !status.isInstalled {
+            serviceState = .notInstalled
+        } else if status.isRunning {
+            serviceState = .running
+        } else {
+            serviceState = .stopped
+        }
     }
 }
 

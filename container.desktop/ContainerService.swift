@@ -9,6 +9,7 @@ import os.log
 private let logger = Logger(subsystem: "container.desktop", category: "ContainerService")
 
 enum ContainerServiceError: LocalizedError {
+    case serviceNotInstalled
     case commandNotFound
     case executionFailed(exitCode: Int32, message: String)
     case networkError(Error)
@@ -16,6 +17,8 @@ enum ContainerServiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
+        case .serviceNotInstalled:
+            return String(localized: "error.serviceNotInstalled")
         case .commandNotFound:
             return String(localized: "error.commandNotFound")
         case .executionFailed(let exitCode, let message):
@@ -29,6 +32,7 @@ enum ContainerServiceError: LocalizedError {
 }
 
 struct SystemStatus {
+    var isInstalled: Bool = false
     var isRunning: Bool = false
     var version: String = ""
     var dataRoot: String = ""
@@ -45,10 +49,21 @@ struct ContainerService {
     static let containerPath = "/usr/local/bin/container"
     private static let githubReleasesURL = "https://api.github.com/repos/apple/container/releases/latest"
 
+    // MARK: - Installation Check
+
+    static var isInstalled: Bool {
+        FileManager.default.fileExists(atPath: containerPath)
+    }
+
     // MARK: - Private Process Execution
 
-    private static func executeProcess(arguments: [String]) async -> (output: String, exitCode: Int32) {
-        await withCheckedContinuation { continuation in
+    private static func executeProcess(arguments: [String]) async -> Result<(output: String, exitCode: Int32), ContainerServiceError> {
+        guard isInstalled else {
+            logger.warning("Container CLI not found at \(containerPath)")
+            return .failure(.serviceNotInstalled)
+        }
+
+        return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: containerPath)
@@ -64,10 +79,10 @@ struct ContainerService {
 
                     let data = pipe.fileHandleForReading.readDataToEndOfFile()
                     let output = String(data: data, encoding: .utf8) ?? ""
-                    continuation.resume(returning: (output, process.terminationStatus))
+                    continuation.resume(returning: .success((output, process.terminationStatus)))
                 } catch {
                     logger.error("Failed to execute process: \(error.localizedDescription)")
-                    continuation.resume(returning: (error.localizedDescription, -1))
+                    continuation.resume(returning: .failure(.executionFailed(exitCode: -1, message: error.localizedDescription)))
                 }
             }
         }
@@ -76,17 +91,26 @@ struct ContainerService {
     // MARK: - System Status
 
     static func fetchSystemStatus() async -> SystemStatus {
-        let (output, exitCode) = await executeProcess(arguments: ["system", "status"])
-
-        guard exitCode == 0 else {
-            return SystemStatus()
+        guard isInstalled else {
+            return SystemStatus(isInstalled: false)
         }
 
-        return parseSystemStatus(from: output, isRunning: true)
+        let result = await executeProcess(arguments: ["system", "status"])
+
+        switch result {
+        case .success(let (output, exitCode)):
+            guard exitCode == 0 else {
+                return SystemStatus(isInstalled: true, isRunning: false)
+            }
+            return parseSystemStatus(from: output, isInstalled: true, isRunning: true)
+        case .failure:
+            return SystemStatus(isInstalled: true, isRunning: false)
+        }
     }
 
-    private static func parseSystemStatus(from output: String, isRunning: Bool) -> SystemStatus {
+    private static func parseSystemStatus(from output: String, isInstalled: Bool, isRunning: Bool) -> SystemStatus {
         var status = SystemStatus()
+        status.isInstalled = isInstalled
         status.isRunning = isRunning
 
         for line in output.components(separatedBy: "\n") {
@@ -179,34 +203,34 @@ struct ContainerService {
 
     // MARK: - Logs
 
-    static func fetchLogs() async -> Result<String, Error> {
-        let (output, exitCode) = await executeProcess(arguments: ["system", "logs"])
+    static func fetchLogs() async -> Result<String, ContainerServiceError> {
+        let result = await executeProcess(arguments: ["system", "logs"])
 
-        if exitCode >= 0 {
-            return .success(output)
-        } else {
-            let error = NSError(
-                domain: "ContainerService",
-                code: Int(exitCode),
-                userInfo: [NSLocalizedDescriptionKey: "Failed to execute container command"]
-            )
+        switch result {
+        case .success(let (output, exitCode)):
+            if exitCode >= 0 {
+                return .success(output)
+            } else {
+                return .failure(.executionFailed(exitCode: exitCode, message: output))
+            }
+        case .failure(let error):
             return .failure(error)
         }
     }
 
     // MARK: - Public Command Execution
 
-    static func runCommand(arguments: [String]) async -> Result<String, Error> {
-        let (output, exitCode) = await executeProcess(arguments: arguments)
+    static func runCommand(arguments: [String]) async -> Result<String, ContainerServiceError> {
+        let result = await executeProcess(arguments: arguments)
 
-        if exitCode == 0 {
-            return .success(output)
-        } else {
-            let error = NSError(
-                domain: "ContainerService",
-                code: Int(exitCode),
-                userInfo: [NSLocalizedDescriptionKey: output]
-            )
+        switch result {
+        case .success(let (output, exitCode)):
+            if exitCode == 0 {
+                return .success(output)
+            } else {
+                return .failure(.executionFailed(exitCode: exitCode, message: output))
+            }
+        case .failure(let error):
             return .failure(error)
         }
     }

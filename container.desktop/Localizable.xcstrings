@@ -72,6 +72,23 @@
         }
       }
     },
+    "error.serviceNotInstalled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Container is not installed. Please install it from https://github.com/apple/container"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Container n'est pas installé. Veuillez l'installer depuis https://github.com/apple/container"
+          }
+        }
+      }
+    },
     "error.executionFailed %lld %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -986,6 +1003,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mise à jour disponible : %@"
+          }
+        }
+      }
+    },
+    "status.notInstalled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Container not installed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Container non installé"
           }
         }
       }
