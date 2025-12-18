@@ -301,9 +301,17 @@ struct SettingsView: View {
     }
 
     private func checkForUpdates() async {
-        let (latest, available, _) = await ContainerService.checkForUpdates()
-        latestVersion = latest
-        updateAvailable = available
+        let result = await ContainerService.checkForUpdates()
+
+        switch result {
+        case .success(let updateInfo):
+            latestVersion = updateInfo.latestVersion
+            updateAvailable = updateInfo.updateAvailable
+        case .failure:
+            // Version check failed silently - not critical for UX
+            latestVersion = ""
+            updateAvailable = false
+        }
     }
 }
 

@@ -4,12 +4,41 @@
 //
 
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "container.desktop", category: "ContainerService")
+
+enum ContainerServiceError: LocalizedError {
+    case commandNotFound
+    case executionFailed(exitCode: Int32, message: String)
+    case networkError(Error)
+    case invalidResponse
+
+    var errorDescription: String? {
+        switch self {
+        case .commandNotFound:
+            return String(localized: "error.commandNotFound")
+        case .executionFailed(let exitCode, let message):
+            return String(localized: "error.executionFailed \(exitCode) \(message)")
+        case .networkError(let error):
+            return String(localized: "error.networkError \(error.localizedDescription)")
+        case .invalidResponse:
+            return String(localized: "error.invalidResponse")
+        }
+    }
+}
 
 struct SystemStatus {
     var isRunning: Bool = false
     var version: String = ""
     var dataRoot: String = ""
     var installRoot: String = ""
+}
+
+struct UpdateInfo {
+    let latestVersion: String
+    let updateAvailable: Bool
+    let currentVersion: String
 }
 
 struct ContainerService {
@@ -37,7 +66,8 @@ struct ContainerService {
                     let output = String(data: data, encoding: .utf8) ?? ""
                     continuation.resume(returning: (output, process.terminationStatus))
                 } catch {
-                    continuation.resume(returning: ("", -1))
+                    logger.error("Failed to execute process: \(error.localizedDescription)")
+                    continuation.resume(returning: (error.localizedDescription, -1))
                 }
             }
         }
@@ -90,12 +120,13 @@ struct ContainerService {
 
     // MARK: - Version Checking
 
-    static func checkForUpdates() async -> (latestVersion: String, updateAvailable: Bool, currentVersion: String) {
+    static func checkForUpdates() async -> Result<UpdateInfo, ContainerServiceError> {
         let status = await fetchSystemStatus()
         let currentVersion = status.version
 
         guard let url = URL(string: githubReleasesURL) else {
-            return ("", false, currentVersion)
+            logger.error("Invalid GitHub releases URL")
+            return .failure(.invalidResponse)
         }
 
         var request = URLRequest(url: url)
@@ -103,17 +134,25 @@ struct ContainerService {
 
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let tagName = json["tag_name"] as? String {
-                let latestVersion = tagName.trimmingCharacters(in: CharacterSet(charactersIn: "v"))
-                let updateAvailable = isNewerVersion(latestVersion, than: currentVersion)
-                return (latestVersion, updateAvailable, currentVersion)
-            }
-        } catch {
-            // Log error in production
-        }
 
-        return ("", false, currentVersion)
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let tagName = json["tag_name"] as? String else {
+                logger.error("Invalid JSON response from GitHub API")
+                return .failure(.invalidResponse)
+            }
+
+            let latestVersion = tagName.trimmingCharacters(in: CharacterSet(charactersIn: "v"))
+            let updateAvailable = isNewerVersion(latestVersion, than: currentVersion)
+
+            return .success(UpdateInfo(
+                latestVersion: latestVersion,
+                updateAvailable: updateAvailable,
+                currentVersion: currentVersion
+            ))
+        } catch {
+            logger.error("Network error while checking for updates: \(error.localizedDescription)")
+            return .failure(.networkError(error))
+        }
     }
 
     static func isNewerVersion(_ latest: String, than current: String) -> Bool {
