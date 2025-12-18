@@ -79,20 +79,6 @@ xcodebuild -project container.desktop.xcodeproj -scheme container.desktop -confi
 - [ContainerClient](https://github.com/apple/container) - Apple's container management framework
 - [ContainerizationOCI](https://github.com/apple/container) - OCI image handling
 
-## Configuration
-
-Settings are stored in `com.apple.container.defaults` UserDefaults domain. Available settings:
-
-| Setting | Description |
-|---------|-------------|
-| `build.rosetta` | Use Rosetta for amd64 images on arm64 |
-| `registry.domain` | Default container registry (default: docker.io) |
-| `dns.domain` | Local DNS domain for containers |
-| `image.builder` | Builder image reference |
-| `image.init` | Initial filesystem image reference |
-| `kernel.url` | Kernel file URL |
-| `kernel.binaryPath` | Kernel binary path in archive |
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
