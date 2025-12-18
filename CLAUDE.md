@@ -48,7 +48,7 @@ Key dependencies:
 
 - Target: macOS 15.0+
 - **Swift 6** with strict concurrency checking
-- App Sandbox and Hardened Runtime enabled
+- Hardened Runtime enabled (App Sandbox disabled for container runtime access)
 
 ### Localization
 

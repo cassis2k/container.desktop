@@ -117,7 +117,7 @@ container.desktop/
 
 - **Target**: macOS 26.1+
 - **Swift**: 6 with strict concurrency checking
-- **Sandbox**: App Sandbox and Hardened Runtime enabled
+- **Hardened Runtime**: Enabled (App Sandbox disabled for container runtime access)
 
 ## Contributing
 
