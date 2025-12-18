@@ -19,11 +19,11 @@ Container.desktop provides a graphical interface for managing containers on macO
 
 ## Features
 
-- **Images Management**: List, pull, and delete container images
-- **Containers**: View and manage running containers
-- **Volumes**: Manage persistent storage volumes
-- **Networks**: Configure container networking
-- **Settings**: Configure container runtime settings (registry, DNS, kernel, etc.)
+- **Images Management**: List and delete container images
+- **Containers**: Coming soon
+- **Volumes**: Coming soon
+- **Networks**: Coming soon
+- **Settings**: Configure container runtime settings (registry, DNS)
 
 ## Requirements
 
@@ -32,6 +32,13 @@ Container.desktop provides a graphical interface for managing containers on macO
 - Xcode 26 (for building from source)
 
 > **Note**: The application automatically checks for new versions of Apple Container by querying the GitHub API. This helps you stay up to date with the latest features and security fixes.
+
+## Architecture
+
+### Dependencies
+
+- [ContainerClient](https://github.com/apple/container) - Apple's container management framework
+- [ContainerizationOCI](https://github.com/apple/container) - OCI image handling
 
 ## Installation
 
@@ -59,23 +66,6 @@ xcodebuild -project container.desktop.xcodeproj -scheme container.desktop -confi
 # Release build
 xcodebuild -project container.desktop.xcodeproj -scheme container.desktop -configuration Release build
 ```
-
-## Architecture
-
-### Dependencies
-
-- [ContainerClient](https://github.com/apple/container) - Apple's container management framework
-- [ContainerizationOCI](https://github.com/apple/container) - OCI image handling
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
