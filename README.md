@@ -62,18 +62,6 @@ xcodebuild -project container.desktop.xcodeproj -scheme container.desktop -confi
 
 ## Architecture
 
-### Key Components
-
-| File | Description |
-|------|-------------|
-| `container_desktopApp.swift` | App entry point |
-| `ContentView.swift` | Main navigation with sidebar layout |
-| `ContainerService.swift` | Centralized service for system status and commands |
-| `ImagesView.swift` | Container images management UI |
-| `LogsView.swift` | System logs display |
-| `SettingsView.swift` | Runtime configuration settings |
-| `StatusBarView.swift` | Status bar component |
-
 ### Dependencies
 
 - [ContainerClient](https://github.com/apple/container) - Apple's container management framework
