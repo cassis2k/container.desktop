@@ -63,29 +63,31 @@ struct ContainerService {
             return .failure(.serviceNotInstalled)
         }
 
-        return await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: containerPath)
-                process.arguments = arguments
+        // Capture values for use in detached task
+        let executablePath = containerPath
+        let taskLogger = logger
 
-                let pipe = Pipe()
-                process.standardOutput = pipe
-                process.standardError = pipe
+        return await Task.detached(priority: .userInitiated) {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: executablePath)
+            process.arguments = arguments
 
-                do {
-                    try process.run()
-                    process.waitUntilExit()
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
 
-                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                    let output = String(data: data, encoding: .utf8) ?? ""
-                    continuation.resume(returning: .success((output, process.terminationStatus)))
-                } catch {
-                    logger.error("Failed to execute process: \(error.localizedDescription)")
-                    continuation.resume(returning: .failure(.executionFailed(exitCode: -1, message: error.localizedDescription)))
-                }
+            do {
+                try process.run()
+                process.waitUntilExit()
+
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8) ?? ""
+                return .success((output, process.terminationStatus))
+            } catch {
+                taskLogger.error("Failed to execute process: \(error.localizedDescription)")
+                return .failure(.executionFailed(exitCode: -1, message: error.localizedDescription))
             }
-        }
+        }.value
     }
 
     // MARK: - System Status
