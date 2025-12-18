@@ -6,48 +6,99 @@
 //
 
 import SwiftUI
-import SwiftData
+
+enum NavigationSection: String, CaseIterable, Identifiable {
+    case containers
+    case images
+    case volumes
+    case network
+    case logs
+    case settings
+
+    var id: String { rawValue }
+
+    var label: LocalizedStringKey {
+        switch self {
+        case .containers: return "navigation.containers"
+        case .images: return "navigation.images"
+        case .volumes: return "navigation.volumes"
+        case .network: return "navigation.network"
+        case .logs: return "navigation.logs"
+        case .settings: return "navigation.settings"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .containers: return "shippingbox"
+        case .images: return "list.bullet.rectangle"
+        case .volumes: return "square.stack.3d.up"
+        case .network: return "link"
+        case .logs: return "doc.text"
+        case .settings: return "gearshape"
+        }
+    }
+
+    var isMainSection: Bool {
+        self != .settings
+    }
+}
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State private var selection: NavigationSection? = .containers
 
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+            List(selection: $selection) {
+                ForEach(NavigationSection.allCases.filter(\.isMainSection)) { section in
+                    NavigationLink(value: section) {
+                        Label(section.label, systemImage: section.icon)
+                            .font(.system(size: 14, weight: .medium))
                     }
+                    .padding(.vertical, 6)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+
+                Divider()
+                    .padding(.vertical, 8)
+
+                NavigationLink(value: NavigationSection.settings) {
+                    Label(NavigationSection.settings.label, systemImage: NavigationSection.settings.icon)
+                        .font(.system(size: 14, weight: .medium))
                 }
+                .padding(.vertical, 6)
             }
+            .navigationSplitViewColumnWidth(200)
+            .navigationTitle(Text("navigation.sections"))
+            .listStyle(.sidebar)
         } detail: {
-            Text("Select an item")
-        }
-    }
+            VStack(spacing: 0) {
+                switch selection {
+                case .containers:
+                    Text("containers.title")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .images:
+                    ImagesView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .volumes:
+                    Text("navigation.volumes")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .network:
+                    Text("network.title")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .logs:
+                    LogsView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .settings:
+                    SettingsView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .none:
+                    Text("navigation.selectItem")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
+                Divider()
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+                StatusBarView()
             }
         }
     }
@@ -55,5 +106,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }

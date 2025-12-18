@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B00A5B002ECC0001005FF512 /* ContainerClient in Frameworks */ = {isa = PBXBuildFile; productRef = B00A5AFF2ECC0001005FF512 /* ContainerClient */; };
+		B00A5B012ECC0002005FF512 /* ContainerPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = B00A5B022ECC0002005FF512 /* ContainerPersistence */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B00A5ADF2ECB8C8E005FF512 /* container.desktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = container.desktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B00A5B002ECC0001005FF512 /* ContainerClient in Frameworks */,
+				B00A5B012ECC0002005FF512 /* ContainerPersistence in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = container.desktop;
 			packageProductDependencies = (
+				B00A5AFF2ECC0001005FF512 /* ContainerClient */,
+				B00A5B022ECC0002005FF512 /* ContainerPersistence */,
 			);
 			productName = container.desktop;
 			productReference = B00A5ADF2ECB8C8E005FF512 /* container.desktop.app */;
@@ -78,7 +87,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2610;
-				LastUpgradeCheck = 2610;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					B00A5ADE2ECB8C8E005FF512 = {
 						CreatedOnToolsVersion = 26.1.1;
@@ -94,6 +103,9 @@
 			);
 			mainGroup = B00A5AD62ECB8C8E005FF512;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B00A5AFE2ECC0001005FF512 /* XCRemoteSwiftPackageReference "container" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B00A5AE02ECB8C8E005FF512 /* Products */;
 			projectDirPath = "";
@@ -159,6 +171,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 7SSS3XF3SE;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -184,8 +197,10 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -223,6 +238,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 7SSS3XF3SE;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -241,7 +257,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -250,15 +268,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 7SSS3XF3SE;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = container.desktop;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -273,7 +294,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -282,15 +303,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 7SSS3XF3SE;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = container.desktop;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -305,7 +329,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -331,6 +355,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B00A5AFE2ECC0001005FF512 /* XCRemoteSwiftPackageReference "container" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/container.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B00A5AFF2ECC0001005FF512 /* ContainerClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B00A5AFE2ECC0001005FF512 /* XCRemoteSwiftPackageReference "container" */;
+			productName = ContainerClient;
+		};
+		B00A5B022ECC0002005FF512 /* ContainerPersistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B00A5AFE2ECC0001005FF512 /* XCRemoteSwiftPackageReference "container" */;
+			productName = ContainerPersistence;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B00A5AD72ECB8C8E005FF512 /* Project object */;
 }
