@@ -16,16 +16,14 @@ struct ContainerService {
     static let containerPath = "/usr/local/bin/container"
     private static let githubReleasesURL = "https://api.github.com/repos/apple/container/releases/latest"
 
-    // MARK: - System Status
+    // MARK: - Private Process Execution
 
-    static func fetchSystemStatus() async -> SystemStatus {
+    private static func executeProcess(arguments: [String]) async -> (output: String, exitCode: Int32) {
         await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                var status = SystemStatus()
-
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: containerPath)
-                process.arguments = ["system", "status"]
+                process.arguments = arguments
 
                 let pipe = Pipe()
                 process.standardOutput = pipe
@@ -34,21 +32,27 @@ struct ContainerService {
                 do {
                     try process.run()
                     process.waitUntilExit()
-                    status.isRunning = process.terminationStatus == 0
 
-                    if status.isRunning {
-                        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                        if let output = String(data: data, encoding: .utf8) {
-                            status = parseSystemStatus(from: output, isRunning: true)
-                        }
-                    }
+                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                    let output = String(data: data, encoding: .utf8) ?? ""
+                    continuation.resume(returning: (output, process.terminationStatus))
                 } catch {
-                    status.isRunning = false
+                    continuation.resume(returning: ("", -1))
                 }
-
-                continuation.resume(returning: status)
             }
         }
+    }
+
+    // MARK: - System Status
+
+    static func fetchSystemStatus() async -> SystemStatus {
+        let (output, exitCode) = await executeProcess(arguments: ["system", "status"])
+
+        guard exitCode == 0 else {
+            return SystemStatus()
+        }
+
+        return parseSystemStatus(from: output, isRunning: true)
     }
 
     private static func parseSystemStatus(from output: String, isRunning: Bool) -> SystemStatus {
@@ -137,64 +141,34 @@ struct ContainerService {
     // MARK: - Logs
 
     static func fetchLogs() async -> Result<String, Error> {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: containerPath)
-                process.arguments = ["system", "logs"]
+        let (output, exitCode) = await executeProcess(arguments: ["system", "logs"])
 
-                let pipe = Pipe()
-                process.standardOutput = pipe
-                process.standardError = pipe
-
-                do {
-                    try process.run()
-                    process.waitUntilExit()
-
-                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                    let output = String(data: data, encoding: .utf8) ?? ""
-                    continuation.resume(returning: .success(output))
-                } catch {
-                    continuation.resume(returning: .failure(error))
-                }
-            }
+        if exitCode >= 0 {
+            return .success(output)
+        } else {
+            let error = NSError(
+                domain: "ContainerService",
+                code: Int(exitCode),
+                userInfo: [NSLocalizedDescriptionKey: "Failed to execute container command"]
+            )
+            return .failure(error)
         }
     }
 
-    // MARK: - Process Execution Helper
+    // MARK: - Public Command Execution
 
     static func runCommand(arguments: [String]) async -> Result<String, Error> {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: containerPath)
-                process.arguments = arguments
+        let (output, exitCode) = await executeProcess(arguments: arguments)
 
-                let pipe = Pipe()
-                process.standardOutput = pipe
-                process.standardError = pipe
-
-                do {
-                    try process.run()
-                    process.waitUntilExit()
-
-                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                    let output = String(data: data, encoding: .utf8) ?? ""
-
-                    if process.terminationStatus == 0 {
-                        continuation.resume(returning: .success(output))
-                    } else {
-                        let error = NSError(
-                            domain: "ContainerService",
-                            code: Int(process.terminationStatus),
-                            userInfo: [NSLocalizedDescriptionKey: output]
-                        )
-                        continuation.resume(returning: .failure(error))
-                    }
-                } catch {
-                    continuation.resume(returning: .failure(error))
-                }
-            }
+        if exitCode == 0 {
+            return .success(output)
+        } else {
+            let error = NSError(
+                domain: "ContainerService",
+                code: Int(exitCode),
+                userInfo: [NSLocalizedDescriptionKey: output]
+            )
+            return .failure(error)
         }
     }
 }
