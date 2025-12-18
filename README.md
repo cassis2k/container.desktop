@@ -93,32 +93,6 @@ Settings are stored in `com.apple.container.defaults` UserDefaults domain. Avail
 | `kernel.url` | Kernel file URL |
 | `kernel.binaryPath` | Kernel binary path in archive |
 
-## Development
-
-### Project Structure
-
-```
-container.desktop/
-├── container.desktop.xcodeproj/
-├── container.desktop/
-│   ├── container_desktopApp.swift
-│   ├── ContentView.swift
-│   ├── ContainerService.swift
-│   ├── ImagesView.swift
-│   ├── LogsView.swift
-│   ├── SettingsView.swift
-│   ├── StatusBarView.swift
-│   └── Localizable.xcstrings
-├── CLAUDE.md
-└── README.md
-```
-
-### Build Settings
-
-- **Target**: macOS 26.1+
-- **Swift**: 6 with strict concurrency checking
-- **Hardened Runtime**: Enabled (App Sandbox disabled for container runtime access)
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
