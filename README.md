@@ -1,6 +1,6 @@
 # Container Desktop
 
-A native macOS application for managing containers using Apple's [Container](https://github.com/apple/container) framework.
+A native macOS graphical interface for Apple's [Container](https://github.com/apple/container) CLI.
 
 ![macOS](https://img.shields.io/badge/macOS-26.1+-blue)
 ![Swift](https://img.shields.io/badge/Swift-6-orange)
@@ -15,7 +15,7 @@ Claude uses the [Cupertino MCP Server](https://github.com/pckernmcp/cupertino) t
 
 ## Overview
 
-Container.desktop provides a graphical interface for managing containers on macOS, built on top of Apple's native containerization technology. It communicates with the `container-apiserver` daemon to manage images, containers, volumes, and networks.
+Container Desktop provides a graphical interface for Apple's `container` CLI, allowing you to manage images, containers, volumes, and networks without using the command line.
 
 ## Features
 
