@@ -235,6 +235,7 @@ struct ImagesView: View {
     @SwiftUI.State private var images: [ImageRow] = []
     @SwiftUI.State private var isLoading: Bool = true
     @SwiftUI.State private var errorMessage: String?
+    @SwiftUI.State private var imageToDelete: ImageRow?
 
     private let columns = [
         GridItem(.adaptive(minimum: 320, maximum: 450), spacing: 16)
@@ -258,9 +259,7 @@ struct ImagesView: View {
                             ImageCardView(
                                 image: image,
                                 onDelete: {
-                                    Task {
-                                        await deleteImage(image)
-                                    }
+                                    imageToDelete = image
                                 }
                             )
                         }
@@ -271,6 +270,26 @@ struct ImagesView: View {
         }
         .task {
             await loadImages()
+        }
+        .alert("images.delete.title", isPresented: .init(
+            get: { imageToDelete != nil },
+            set: { if !$0 { imageToDelete = nil } }
+        )) {
+            Button("common.cancel", role: .cancel) {
+                imageToDelete = nil
+            }
+            Button("images.delete.confirm", role: .destructive) {
+                if let image = imageToDelete {
+                    Task {
+                        await deleteImage(image)
+                    }
+                }
+                imageToDelete = nil
+            }
+        } message: {
+            if let image = imageToDelete {
+                Text("images.delete.message \(image.name)")
+            }
         }
     }
 

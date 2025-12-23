@@ -169,6 +169,7 @@ struct NetworkView: View {
     @State private var showingCreateSheet: Bool = false
     @State private var newNetworkName: String = ""
     @State private var isCreating: Bool = false
+    @State private var networkToDelete: NetworkRow?
 
     private let columns = [
         GridItem(.adaptive(minimum: 320, maximum: 450), spacing: 16)
@@ -194,6 +195,26 @@ struct NetworkView: View {
         .sheet(isPresented: $showingCreateSheet) {
             createNetworkSheet
         }
+        .alert("network.delete.title", isPresented: .init(
+            get: { networkToDelete != nil },
+            set: { if !$0 { networkToDelete = nil } }
+        )) {
+            Button("common.cancel", role: .cancel) {
+                networkToDelete = nil
+            }
+            Button("network.delete.confirm", role: .destructive) {
+                if let network = networkToDelete {
+                    Task {
+                        await deleteNetwork(network)
+                    }
+                }
+                networkToDelete = nil
+            }
+        } message: {
+            if let network = networkToDelete {
+                Text("network.delete.message \(network.id)")
+            }
+        }
     }
 
     private var emptyStateView: some View {
@@ -217,9 +238,7 @@ struct NetworkView: View {
                     NetworkCardView(
                         network: network,
                         onDelete: {
-                            Task {
-                                await deleteNetwork(network)
-                            }
+                            networkToDelete = network
                         }
                     )
                 }

@@ -207,6 +207,57 @@
         }
       }
     },
+    "images.delete.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
+    },
+    "images.delete.message %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to delete the image \"%@\"? This action cannot be undone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Êtes-vous sûr de vouloir supprimer l'image « %@ » ? Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "images.delete.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Image"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer l'image"
+          }
+        }
+      }
+    },
     "images.created" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -628,6 +679,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créer un nouveau réseau"
+          }
+        }
+      }
+    },
+    "network.delete.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
+    },
+    "network.delete.message %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to delete the network \"%@\"? Containers using this network will lose connectivity."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Êtes-vous sûr de vouloir supprimer le réseau « %@ » ? Les conteneurs utilisant ce réseau perdront leur connectivité."
+          }
+        }
+      }
+    },
+    "network.delete.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Network"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le réseau"
           }
         }
       }
