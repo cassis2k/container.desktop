@@ -167,10 +167,10 @@ struct EditableSettingRow: View {
 
 struct SettingRow<Content: View>: View {
     let title: LocalizedStringKey
-    let description: LocalizedStringKey
+    let description: LocalizedStringKey?
     let content: () -> Content
 
-    init(title: LocalizedStringKey, description: LocalizedStringKey, @ViewBuilder content: @escaping () -> Content) {
+    init(title: LocalizedStringKey, description: LocalizedStringKey? = nil, @ViewBuilder content: @escaping () -> Content) {
         self.title = title
         self.description = description
         self.content = content
@@ -186,13 +186,15 @@ struct SettingRow<Content: View>: View {
             }
             .padding(.vertical, 10)
 
-            Divider()
+            if let description {
+                Divider()
 
-            Text(description)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.vertical, 10)
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.vertical, 10)
+            }
         }
     }
 }
@@ -207,7 +209,7 @@ struct SettingsView: View {
                     title: "settings.version",
                     description: viewModel.updateAvailable
                         ? "settings.version.updateAvailable \(viewModel.latestVersion)"
-                        : "settings.version.description"
+                        : nil
                 ) {
                     HStack(spacing: 6) {
                         Text(viewModel.appVersion)
@@ -221,10 +223,7 @@ struct SettingsView: View {
                     }
                 }
 
-                SettingRow(
-                    title: "settings.dataRoot",
-                    description: "settings.dataRoot.description"
-                ) {
+                SettingRow(title: "settings.dataRoot") {
                     Text(viewModel.appDataRoot)
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
@@ -232,10 +231,7 @@ struct SettingsView: View {
                         .truncationMode(.middle)
                 }
 
-                SettingRow(
-                    title: "settings.installRoot",
-                    description: "settings.installRoot.description"
-                ) {
+                SettingRow(title: "settings.installRoot") {
                     Text(viewModel.appInstallRoot)
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
