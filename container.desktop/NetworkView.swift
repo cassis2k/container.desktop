@@ -169,6 +169,7 @@ struct NetworkView: View {
     @State private var showingCreateSheet: Bool = false
     @State private var newNetworkName: String = ""
     @State private var isCreating: Bool = false
+    @State private var createError: String?
     @State private var networkToDelete: NetworkRow?
 
     private let columns = [
@@ -255,18 +256,29 @@ struct NetworkView: View {
     }
 
     private var createNetworkSheet: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             Text("network.create.title")
                 .font(.headline)
 
             TextField("network.create.namePlaceholder", text: $newNetworkName)
                 .textFieldStyle(.roundedBorder)
                 .frame(width: 250)
+                .onChange(of: newNetworkName) {
+                    createError = nil
+                }
+
+            if let error = createError {
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .frame(width: 250, alignment: .leading)
+            }
 
             HStack(spacing: 12) {
                 Button("common.cancel") {
                     showingCreateSheet = false
                     newNetworkName = ""
+                    createError = nil
                 }
                 .keyboardShortcut(.cancelAction)
 
@@ -301,6 +313,7 @@ struct NetworkView: View {
         guard !newNetworkName.isEmpty else { return }
 
         isCreating = true
+        createError = nil
 
         do {
             let config = try NetworkConfiguration(id: newNetworkName, mode: .nat)
@@ -310,7 +323,7 @@ struct NetworkView: View {
             newNetworkName = ""
             await loadNetworks()
         } catch {
-            errorMessage = error.localizedDescription
+            createError = error.localizedDescription
         }
 
         isCreating = false
