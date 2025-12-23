@@ -17,6 +17,11 @@ struct ImageRow: Identifiable {
     var size: Int64?
     var createdAt: Date?
 
+    /// System images are managed automatically and should not be modified by the user
+    var isSystemImage: Bool {
+        name == "vminit"
+    }
+
     // Static formatters for better performance
     private static let byteFormatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()
@@ -145,30 +150,43 @@ struct ImageCardView: View {
                         .foregroundStyle(Color.secondary)
                         .clipShape(Capsule())
 
-                    HStack(spacing: 12) {
-                        Button(action: onUpdate) {
-                            Text("images.pull")
-                                .font(.caption)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(isUpdateHovered ? Color.green : Color.green.opacity(0.15))
-                                .foregroundStyle(isUpdateHovered ? Color.white : Color.green)
-                                .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .onHover { hovering in
-                            isUpdateHovered = hovering
-                        }
+                    if image.isSystemImage {
+                        // System badge for managed images
+                        Label("images.system", systemImage: "gearshape.fill")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.orange.opacity(0.15))
+                            .foregroundStyle(Color.orange)
+                            .clipShape(Capsule())
+                    } else {
+                        // Action buttons for user images
+                        HStack(spacing: 12) {
+                            Button(action: onUpdate) {
+                                Text("images.pull")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(isUpdateHovered ? Color.green : Color.green.opacity(0.15))
+                                    .foregroundStyle(isUpdateHovered ? Color.white : Color.green)
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .onHover { hovering in
+                                isUpdateHovered = hovering
+                            }
 
-                        Button(action: onDelete) {
-                            Image(systemName: "trash")
-                                .font(.system(size: 14))
-                                .foregroundStyle(isDeleteHovered ? Color.red : Color.secondary)
-                        }
-                        .buttonStyle(.plain)
-                        .onHover { hovering in
-                            isDeleteHovered = hovering
+                            Button(action: onDelete) {
+                                Image(systemName: "trash")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(isDeleteHovered ? Color.red : Color.secondary)
+                            }
+                            .buttonStyle(.plain)
+                            .onHover { hovering in
+                                isDeleteHovered = hovering
+                            }
                         }
                     }
                 }
