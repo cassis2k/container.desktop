@@ -1,6 +1,6 @@
 # Container.desktop
 
-A native macOS graphical interface for Apple's [Container](https://github.com/apple/container) CLI.
+A native macOS graphical interface for Apple [container](https://github.com/apple/container) CLI.
 
 ![macOS](https://img.shields.io/badge/macOS-26.1+-blue)
 ![Swift](https://img.shields.io/badge/Swift-6-orange)
@@ -13,30 +13,15 @@ This is a personal project aimed at learning and understanding the software deve
 
 ## Overview
 
-Container.desktop provides a graphical interface for Apple's `container` CLI, allowing you to manage images, containers, volumes, and networks without using the command line.
-
-## Features
-
-- **Images Management**: List and delete container images
-- **Containers**: Coming soon
-- **Volumes**: Coming soon
-- **Networks**: Coming soon
-- **Settings**: Configure container runtime settings (registry, DNS)
+Container.desktop provides a graphical interface for Apple [container](https://github.com/apple/container) CLI, allowing you to manage images, containers, volumes, and networks without using the command line.
 
 ## Requirements
 
 - macOS 26 or later
-- [Apple Container](https://github.com/apple/container) **v0.7.1** or later installed and running
+- [Apple container](https://github.com/apple/container) **v0.7.1** or later installed and running
 - Xcode 26 (for building from source)
 
 > **Note**: The application automatically checks for new versions of Apple Container by querying the GitHub API. This helps you stay up to date with the latest features and security fixes.
-
-## Architecture
-
-### Dependencies
-
-- [ContainerClient](https://github.com/apple/container) - Apple's container management framework
-- [ContainerizationOCI](https://github.com/apple/container) - OCI image handling
 
 ## Installation
 
@@ -55,12 +40,7 @@ open container.desktop.xcodeproj
 
 3. Build and run (Cmd+R)
 
-### Command Line Build
-
 ```bash
-# Debug build
-xcodebuild -project container.desktop.xcodeproj -scheme container.desktop -configuration Debug build
-
 # Release build
 xcodebuild -project container.desktop.xcodeproj -scheme container.desktop -configuration Release build
 ```
@@ -72,6 +52,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - [Apple Container](https://github.com/apple/container) - The underlying container runtime
-- [SwiftUI](https://developer.apple.com/xcode/swiftui/) - Apple's declarative UI framework
 - [Claude Code](https://claude.ai/code) - AI-powered coding assistant
 - [Cupertino MCP Server](https://github.com/mihaelamj/cupertino) - MCP server for Apple documentation access
