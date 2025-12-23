@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import os.log
+import OSLog
 
 private let logger = Logger(subsystem: "container.desktop", category: "ContainerService")
 
@@ -43,6 +43,22 @@ struct UpdateInfo {
     let latestVersion: String
     let updateAvailable: Bool
     let currentVersion: String
+}
+
+struct LogEntry: Identifiable, Sendable {
+    let id: UUID
+    let date: Date
+    let level: OSLogEntryLog.Level
+    let category: String
+    let message: String
+
+    nonisolated init(from entry: OSLogEntryLog) {
+        self.id = UUID()
+        self.date = entry.date
+        self.level = entry.level
+        self.category = entry.category
+        self.message = entry.composedMessage
+    }
 }
 
 struct ContainerService {
@@ -205,19 +221,29 @@ struct ContainerService {
 
     // MARK: - Logs
 
-    static func fetchLogs() async -> Result<String, ContainerServiceError> {
-        let result = await executeProcess(arguments: ["system", "logs"])
+    static func fetchLogs(lastMinutes: Int = 60, limit: Int = 1000) async -> Result<[LogEntry], ContainerServiceError> {
+        await Task.detached(priority: .userInitiated) {
+            do {
+                let store = try OSLogStore(scope: .system)
+                let startDate = Date().addingTimeInterval(-Double(lastMinutes * 60))
+                let position = store.position(date: startDate)
+                let predicate = NSPredicate(format: "subsystem == 'com.apple.container'")
 
-        switch result {
-        case .success(let (output, exitCode)):
-            if exitCode >= 0 {
-                return .success(output)
-            } else {
-                return .failure(.executionFailed(exitCode: exitCode, message: output))
+                let entries = try store.getEntries(at: position, matching: predicate)
+                var logEntries: [LogEntry] = []
+                logEntries.reserveCapacity(limit)
+
+                for entry in entries {
+                    guard let logEntry = entry as? OSLogEntryLog else { continue }
+                    logEntries.append(LogEntry(from: logEntry))
+                    if logEntries.count >= limit { break }
+                }
+
+                return .success(logEntries)
+            } catch {
+                return .failure(.executionFailed(exitCode: -1, message: error.localizedDescription))
             }
-        case .failure(let error):
-            return .failure(error)
-        }
+        }.value
     }
 
     // MARK: - Public Command Execution
