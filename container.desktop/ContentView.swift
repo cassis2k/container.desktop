@@ -83,7 +83,7 @@ struct ContentView: View {
                     Text("navigation.volumes")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .network:
-                    Text("network.title")
+                    NetworkView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .logs:
                     LogsView()
