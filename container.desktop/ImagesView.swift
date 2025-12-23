@@ -100,10 +100,8 @@ struct ImageRow: Identifiable {
 
 struct ImageCardView: View {
     let image: ImageRow
-    let onUpdate: () -> Void
     let onDelete: () -> Void
     @SwiftUI.State private var isHovered = false
-    @SwiftUI.State private var isUpdateHovered = false
     @SwiftUI.State private var isDeleteHovered = false
 
     var body: some View {
@@ -161,32 +159,15 @@ struct ImageCardView: View {
                             .foregroundStyle(Color.orange)
                             .clipShape(Capsule())
                     } else {
-                        // Action buttons for user images
-                        HStack(spacing: 12) {
-                            Button(action: onUpdate) {
-                                Text("images.pull")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(isUpdateHovered ? Color.green : Color.green.opacity(0.15))
-                                    .foregroundStyle(isUpdateHovered ? Color.white : Color.green)
-                                    .clipShape(Capsule())
-                            }
-                            .buttonStyle(.plain)
-                            .onHover { hovering in
-                                isUpdateHovered = hovering
-                            }
-
-                            Button(action: onDelete) {
-                                Image(systemName: "trash")
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(isDeleteHovered ? Color.red : Color.secondary)
-                            }
-                            .buttonStyle(.plain)
-                            .onHover { hovering in
-                                isDeleteHovered = hovering
-                            }
+                        // Delete button for user images
+                        Button(action: onDelete) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 14))
+                                .foregroundStyle(isDeleteHovered ? Color.red : Color.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .onHover { hovering in
+                            isDeleteHovered = hovering
                         }
                     }
                 }
@@ -276,11 +257,6 @@ struct ImagesView: View {
                         ForEach(images) { image in
                             ImageCardView(
                                 image: image,
-                                onUpdate: {
-                                    Task {
-                                        await updateImage(image)
-                                    }
-                                },
                                 onDelete: {
                                     Task {
                                         await deleteImage(image)
@@ -318,20 +294,6 @@ struct ImagesView: View {
         }
 
         isLoading = false
-    }
-
-    private func updateImage(_ image: ImageRow) async {
-        do {
-            let updatedClientImage = try await ClientImage.pull(reference: image.reference)
-
-            if let index = images.firstIndex(where: { $0.id == image.id }) {
-                var updatedRow = ImageRow(from: updatedClientImage)
-                await updatedRow.enrichWithDetails(from: updatedClientImage)
-                images[index] = updatedRow
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-        }
     }
 
     private func deleteImage(_ image: ImageRow) async {

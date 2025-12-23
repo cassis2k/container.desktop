@@ -224,23 +224,6 @@
         }
       }
     },
-    "images.pull" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pull"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Télécharger"
-          }
-        }
-      }
-    },
     "images.size" : {
       "extractionState" : "manual",
       "localizations" : {
