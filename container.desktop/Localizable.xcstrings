@@ -59,6 +59,40 @@
         }
       }
     },
+    "containers.empty.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's quiet... too quiet. Time to spin up some containers!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C'est calme... trop calme. Il est temps de lancer quelques conteneurs !"
+          }
+        }
+      }
+    },
+    "containers.empty.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No containers running"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun conteneur en cours"
+          }
+        }
+      }
+    },
     "containers.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -463,6 +497,57 @@
       }
     },
     "navigation.volumes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volumes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volumes"
+          }
+        }
+      }
+    },
+    "volumes.empty.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No volumes here... Your data is living dangerously in ephemeral containers!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun volume ici... Vos données vivent dangereusement dans des conteneurs éphémères !"
+          }
+        }
+      }
+    },
+    "volumes.empty.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No volumes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun volume"
+          }
+        }
+      }
+    },
+    "volumes.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {

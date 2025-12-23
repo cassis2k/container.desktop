@@ -74,13 +74,13 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 switch selection {
                 case .containers:
-                    Text("containers.title")
+                    ContainersView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .images:
                     ImagesView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .volumes:
-                    Text("navigation.volumes")
+                    VolumesView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .network:
                     NetworkView()
