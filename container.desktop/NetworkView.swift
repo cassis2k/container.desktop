@@ -7,11 +7,54 @@ import SwiftUI
 import ContainerClient
 internal import ContainerNetworkService
 
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = arrangeSubviews(proposal: proposal, subviews: subviews)
+        return result.size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = arrangeSubviews(proposal: proposal, subviews: subviews)
+        for (index, position) in result.positions.enumerated() {
+            subviews[index].place(at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y), proposal: .unspecified)
+        }
+    }
+
+    private func arrangeSubviews(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, positions: [CGPoint]) {
+        let maxWidth = proposal.width ?? .infinity
+        var positions: [CGPoint] = []
+        var currentX: CGFloat = 0
+        var currentY: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        var totalHeight: CGFloat = 0
+        var totalWidth: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if currentX + size.width > maxWidth && currentX > 0 {
+                currentX = 0
+                currentY += lineHeight + spacing
+                lineHeight = 0
+            }
+            positions.append(CGPoint(x: currentX, y: currentY))
+            lineHeight = max(lineHeight, size.height)
+            currentX += size.width + spacing
+            totalWidth = max(totalWidth, currentX - spacing)
+            totalHeight = currentY + lineHeight
+        }
+
+        return (CGSize(width: totalWidth, height: totalHeight), positions)
+    }
+}
+
 struct NetworkRow: Identifiable {
     let id: String
     let mode: String
     let subnet: String?
     let gateway: String?
+    let labels: [String: String]
     let state: String
     let createdAt: Date
 
@@ -31,10 +74,12 @@ struct NetworkRow: Identifiable {
             self.mode = String(describing: config.mode)
             self.subnet = config.subnet
             self.gateway = nil
+            self.labels = config.labels
         case .running(let config, let status):
             self.mode = String(describing: config.mode)
             self.subnet = status.address
             self.gateway = status.gateway
+            self.labels = config.labels
         }
     }
 
@@ -141,6 +186,20 @@ struct NetworkCardView: View {
                     Text(network.formattedDate)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+            }
+
+            if !network.labels.isEmpty {
+                FlowLayout(spacing: 6) {
+                    ForEach(network.labels.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                        Text("\(key)=\(value)")
+                            .font(.caption2)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(Color.purple.opacity(0.15))
+                            .foregroundStyle(Color.purple)
+                            .clipShape(Capsule())
+                    }
                 }
             }
         }
