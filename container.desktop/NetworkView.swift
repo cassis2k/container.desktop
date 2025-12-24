@@ -428,6 +428,7 @@ struct NetworkView: View {
         .padding(24)
     }
 
+    @MainActor
     private func loadNetworks() async {
         isLoading = true
         errorMessage = nil
@@ -443,6 +444,7 @@ struct NetworkView: View {
         isLoading = false
     }
 
+    @MainActor
     private func createNetwork() async {
         guard !newNetworkName.isEmpty else { return }
 
@@ -469,6 +471,7 @@ struct NetworkView: View {
         isCreating = false
     }
 
+    @MainActor
     private func deleteNetwork(_ network: NetworkRow) async {
         do {
             try await ClientNetwork.delete(id: network.id)
