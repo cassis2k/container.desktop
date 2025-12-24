@@ -168,6 +168,7 @@ struct NetworkView: View {
     @State private var errorMessage: String?
     @State private var showingCreateSheet: Bool = false
     @State private var newNetworkName: String = ""
+    @State private var newNetworkSubnet: String = ""
     @State private var isCreating: Bool = false
     @State private var createError: String?
     @State private var networkToDelete: NetworkRow?
@@ -260,12 +261,30 @@ struct NetworkView: View {
             Text("network.create.title")
                 .font(.headline)
 
-            TextField("network.create.namePlaceholder", text: $newNetworkName)
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 250)
-                .onChange(of: newNetworkName) {
-                    createError = nil
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("network.create.name")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextField("network.create.namePlaceholder", text: $newNetworkName)
+                        .textFieldStyle(.roundedBorder)
                 }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("network.create.subnet")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextField("network.create.subnetPlaceholder", text: $newNetworkSubnet)
+                        .textFieldStyle(.roundedBorder)
+                }
+            }
+            .frame(width: 250)
+            .onChange(of: newNetworkName) {
+                createError = nil
+            }
+            .onChange(of: newNetworkSubnet) {
+                createError = nil
+            }
 
             if let error = createError {
                 Label(error, systemImage: "exclamationmark.triangle.fill")
@@ -278,6 +297,7 @@ struct NetworkView: View {
                 Button("common.cancel") {
                     showingCreateSheet = false
                     newNetworkName = ""
+                    newNetworkSubnet = ""
                     createError = nil
                 }
                 .keyboardShortcut(.cancelAction)
@@ -316,11 +336,13 @@ struct NetworkView: View {
         createError = nil
 
         do {
-            let config = try NetworkConfiguration(id: newNetworkName, mode: .nat)
+            let subnet = newNetworkSubnet.isEmpty ? nil : newNetworkSubnet
+            let config = try NetworkConfiguration(id: newNetworkName, mode: .nat, subnet: subnet)
             _ = try await ClientNetwork.create(configuration: config)
 
             showingCreateSheet = false
             newNetworkName = ""
+            newNetworkSubnet = ""
             await loadNetworks()
         } catch {
             createError = error.localizedDescription

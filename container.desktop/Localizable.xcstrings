@@ -649,6 +649,23 @@
         }
       }
     },
+    "network.create.name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom"
+          }
+        }
+      }
+    },
     "network.create.namePlaceholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -662,6 +679,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nom du réseau"
+          }
+        }
+      }
+    },
+    "network.create.subnet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subnet (optional)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sous-réseau (optionnel)"
+          }
+        }
+      }
+    },
+    "network.create.subnetPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 192.168.100.0/24"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ex. 192.168.100.0/24"
           }
         }
       }
