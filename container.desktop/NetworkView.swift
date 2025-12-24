@@ -169,6 +169,7 @@ struct NetworkView: View {
     @State private var showingCreateSheet: Bool = false
     @State private var newNetworkName: String = ""
     @State private var newNetworkSubnet: String = ""
+    @State private var newNetworkLabels: [(key: String, value: String)] = []
     @State private var isCreating: Bool = false
     @State private var createError: String?
     @State private var networkToDelete: NetworkRow?
@@ -277,8 +278,61 @@ struct NetworkView: View {
                     TextField("network.create.subnetPlaceholder", text: $newNetworkSubnet)
                         .textFieldStyle(.roundedBorder)
                 }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text("network.create.labels")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button {
+                            newNetworkLabels.append((key: "", value: ""))
+                        } label: {
+                            Image(systemName: "plus.circle")
+                                .font(.caption)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    if newNetworkLabels.isEmpty {
+                        Text("network.create.labels.empty")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 4)
+                    } else {
+                        ForEach(newNetworkLabels.indices, id: \.self) { index in
+                            HStack(spacing: 8) {
+                                TextField("network.create.labels.key", text: Binding(
+                                    get: { newNetworkLabels[index].key },
+                                    set: { newNetworkLabels[index].key = $0 }
+                                ))
+                                .textFieldStyle(.roundedBorder)
+                                .frame(maxWidth: .infinity)
+
+                                Text("=")
+                                    .foregroundStyle(.secondary)
+
+                                TextField("network.create.labels.value", text: Binding(
+                                    get: { newNetworkLabels[index].value },
+                                    set: { newNetworkLabels[index].value = $0 }
+                                ))
+                                .textFieldStyle(.roundedBorder)
+                                .frame(maxWidth: .infinity)
+
+                                Button {
+                                    newNetworkLabels.remove(at: index)
+                                } label: {
+                                    Image(systemName: "minus.circle")
+                                        .foregroundStyle(.red)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
             }
-            .frame(width: 250)
+            .frame(width: 350)
             .onChange(of: newNetworkName) {
                 createError = nil
             }
@@ -290,7 +344,7 @@ struct NetworkView: View {
                 Label(error, systemImage: "exclamationmark.triangle.fill")
                     .font(.caption)
                     .foregroundStyle(.red)
-                    .frame(width: 250, alignment: .leading)
+                    .frame(width: 350, alignment: .leading)
             }
 
             HStack(spacing: 12) {
@@ -298,6 +352,7 @@ struct NetworkView: View {
                     showingCreateSheet = false
                     newNetworkName = ""
                     newNetworkSubnet = ""
+                    newNetworkLabels = []
                     createError = nil
                 }
                 .keyboardShortcut(.cancelAction)
@@ -337,12 +392,16 @@ struct NetworkView: View {
 
         do {
             let subnet = newNetworkSubnet.isEmpty ? nil : newNetworkSubnet
-            let config = try NetworkConfiguration(id: newNetworkName, mode: .nat, subnet: subnet)
+            let labels = newNetworkLabels
+                .filter { !$0.key.isEmpty }
+                .reduce(into: [String: String]()) { $0[$1.key] = $1.value }
+            let config = try NetworkConfiguration(id: newNetworkName, mode: .nat, subnet: subnet, labels: labels)
             _ = try await ClientNetwork.create(configuration: config)
 
             showingCreateSheet = false
             newNetworkName = ""
             newNetworkSubnet = ""
+            newNetworkLabels = []
             await loadNetworks()
         } catch {
             createError = error.localizedDescription
