@@ -11,14 +11,31 @@
 		B00A5B012ECC0002005FF512 /* ContainerPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = B00A5B022ECC0002005FF512 /* ContainerPersistence */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B05DEC1B2EFAEE3000FA4749 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B00A5AD72ECB8C8E005FF512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B00A5ADE2ECB8C8E005FF512;
+			remoteInfo = container.desktop;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		B00A5ADF2ECB8C8E005FF512 /* container.desktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = container.desktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B05DEC172EFAEE3000FA4749 /* container.desktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = container.desktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B05DEC282EFAFF9A00FA4749 /* container.desktop.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = container.desktop.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B00A5AE12ECB8C8E005FF512 /* container.desktop */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = container.desktop;
+			sourceTree = "<group>";
+		};
+		B05DEC182EFAEE3000FA4749 /* container.desktopTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = container.desktopTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -33,13 +50,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B05DEC142EFAEE3000FA4749 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		B00A5AD62ECB8C8E005FF512 = {
 			isa = PBXGroup;
 			children = (
+				B05DEC282EFAFF9A00FA4749 /* container.desktop.xctestplan */,
 				B00A5AE12ECB8C8E005FF512 /* container.desktop */,
+				B05DEC182EFAEE3000FA4749 /* container.desktopTests */,
 				B00A5AE02ECB8C8E005FF512 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				B00A5ADF2ECB8C8E005FF512 /* container.desktop.app */,
+				B05DEC172EFAEE3000FA4749 /* container.desktopTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +106,29 @@
 			productReference = B00A5ADF2ECB8C8E005FF512 /* container.desktop.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B05DEC162EFAEE3000FA4749 /* container.desktopTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B05DEC1D2EFAEE3000FA4749 /* Build configuration list for PBXNativeTarget "container.desktopTests" */;
+			buildPhases = (
+				B05DEC132EFAEE3000FA4749 /* Sources */,
+				B05DEC142EFAEE3000FA4749 /* Frameworks */,
+				B05DEC152EFAEE3000FA4749 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B05DEC1C2EFAEE3000FA4749 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B05DEC182EFAEE3000FA4749 /* container.desktopTests */,
+			);
+			name = container.desktopTests;
+			packageProductDependencies = (
+			);
+			productName = container.desktopTests;
+			productReference = B05DEC172EFAEE3000FA4749 /* container.desktopTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -86,11 +136,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2610;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					B00A5ADE2ECB8C8E005FF512 = {
 						CreatedOnToolsVersion = 26.1.1;
+					};
+					B05DEC162EFAEE3000FA4749 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = B00A5ADE2ECB8C8E005FF512;
 					};
 				};
 			};
@@ -112,12 +166,20 @@
 			projectRoot = "";
 			targets = (
 				B00A5ADE2ECB8C8E005FF512 /* container.desktop */,
+				B05DEC162EFAEE3000FA4749 /* container.desktopTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B00A5ADD2ECB8C8E005FF512 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B05DEC152EFAEE3000FA4749 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -134,7 +196,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B05DEC132EFAEE3000FA4749 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B05DEC1C2EFAEE3000FA4749 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B00A5ADE2ECB8C8E005FF512 /* container.desktop */;
+			targetProxy = B05DEC1B2EFAEE3000FA4749 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B00A5AEA2ECB8C8F005FF512 /* Debug */ = {
@@ -333,6 +410,48 @@
 			};
 			name = Release;
 		};
+		B05DEC1E2EFAEE3000FA4749 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7SSS3XF3SE;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "curiousasctivity.container-desktopTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/container.desktop.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/container.desktop";
+			};
+			name = Debug;
+		};
+		B05DEC1F2EFAEE3000FA4749 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7SSS3XF3SE;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "curiousasctivity.container-desktopTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/container.desktop.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/container.desktop";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -350,6 +469,15 @@
 			buildConfigurations = (
 				B00A5AED2ECB8C8F005FF512 /* Debug */,
 				B00A5AEE2ECB8C8F005FF512 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B05DEC1D2EFAEE3000FA4749 /* Build configuration list for PBXNativeTarget "container.desktopTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B05DEC1E2EFAEE3000FA4749 /* Debug */,
+				B05DEC1F2EFAEE3000FA4749 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

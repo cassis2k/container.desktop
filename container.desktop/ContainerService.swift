@@ -126,7 +126,7 @@ struct ContainerService {
         }
     }
 
-    private static func parseSystemStatus(from output: String, isInstalled: Bool, isRunning: Bool) -> SystemStatus {
+    static func parseSystemStatus(from output: String, isInstalled: Bool, isRunning: Bool) -> SystemStatus {
         var status = SystemStatus()
         status.isInstalled = isInstalled
         status.isRunning = isRunning
@@ -148,7 +148,7 @@ struct ContainerService {
         return status
     }
 
-    private static func extractVersion(from line: String) -> String {
+    static func extractVersion(from line: String) -> String {
         if let range = line.range(of: "version ") {
             let afterVersion = line[range.upperBound...]
             if let spaceIndex = afterVersion.firstIndex(of: " ") {
@@ -199,24 +199,9 @@ struct ContainerService {
 
     static func isNewerVersion(_ latest: String, than current: String) -> Bool {
         guard !current.isEmpty, !latest.isEmpty else { return false }
-
         let latestClean = latest.trimmingCharacters(in: CharacterSet(charactersIn: "v"))
         let currentClean = current.trimmingCharacters(in: CharacterSet(charactersIn: "v"))
-
-        let latestParts = latestClean.split(separator: ".").compactMap { Int($0) }
-        let currentParts = currentClean.split(separator: ".").compactMap { Int($0) }
-
-        for i in 0..<max(latestParts.count, currentParts.count) {
-            let latestPart = i < latestParts.count ? latestParts[i] : 0
-            let currentPart = i < currentParts.count ? currentParts[i] : 0
-
-            if latestPart > currentPart {
-                return true
-            } else if latestPart < currentPart {
-                return false
-            }
-        }
-        return false
+        return latestClean.compare(currentClean, options: .numeric) == .orderedDescending
     }
 
     // MARK: - Logs
