@@ -801,19 +801,36 @@
         }
       }
     },
-    "network.created" : {
+    "network.inUse" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Created"
+            "value" : "IN USE"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créé"
+            "value" : "UTILISÉ"
+          }
+        }
+      }
+    },
+    "network.notInUse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NOT IN USE"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NON UTILISÉ"
           }
         }
       }

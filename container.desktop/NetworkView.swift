@@ -56,17 +56,10 @@ struct NetworkRow: Identifiable {
     let gateway: String?
     let labels: [String: String]
     let state: String
-    let createdAt: Date
-
-    private static let dateFormatter: RelativeDateTimeFormatter = {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter
-    }()
+    let isInUse: Bool
 
     init(from networkState: NetworkState) {
         self.id = networkState.id
-        self.createdAt = networkState.creationDate
         self.state = networkState.state
 
         switch networkState {
@@ -75,16 +68,14 @@ struct NetworkRow: Identifiable {
             self.subnet = config.subnet
             self.gateway = nil
             self.labels = config.labels
+            self.isInUse = false
         case .running(let config, let status):
             self.mode = String(describing: config.mode)
             self.subnet = status.address
             self.gateway = status.gateway
             self.labels = config.labels
+            self.isInUse = true
         }
-    }
-
-    var formattedDate: String {
-        Self.dateFormatter.localizedString(for: createdAt, relativeTo: Date())
     }
 }
 
@@ -179,14 +170,14 @@ struct NetworkCardView: View {
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("network.created")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                    Text(network.formattedDate)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                Text(network.isInUse ? "network.inUse" : "network.notInUse")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(network.isInUse ? Color.green.opacity(0.15) : Color.gray.opacity(0.15))
+                    .foregroundStyle(network.isInUse ? Color.green : Color.secondary)
+                    .clipShape(Capsule())
             }
 
             if !network.labels.isEmpty {
