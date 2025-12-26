@@ -170,6 +170,8 @@ struct LogsView: View {
 
 struct LogEntryRow: View {
     let entry: LogEntry
+    @State private var showCopiedFeedback = false
+    @State private var isHovered = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -179,6 +181,23 @@ struct LogEntryRow: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
+                if showCopiedFeedback {
+                    Text("logs.copied")
+                        .font(.caption)
+                        .foregroundStyle(.green)
+                        .transition(.opacity)
+                }
+                if isHovered && !showCopiedFeedback {
+                    Button {
+                        copyToClipboard()
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.borderless)
+                    .transition(.opacity)
+                    .help(Text("logs.copyLine"))
+                }
                 Text(entry.date, style: .time)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -188,6 +207,31 @@ struct LogEntryRow: View {
                 .textSelection(.enabled)
         }
         .padding(.vertical, 6)
+        .contentShape(Rectangle())
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                isHovered = hovering
+            }
+        }
+    }
+
+    private func copyToClipboard() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let formattedDate = dateFormatter.string(from: entry.date)
+        let logLine = "[\(formattedDate)] [\(levelInfo.1)] [\(entry.category)] \(entry.message)"
+
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(logLine, forType: .string)
+
+        withAnimation {
+            showCopiedFeedback = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            withAnimation {
+                showCopiedFeedback = false
+            }
+        }
     }
 
     @ViewBuilder
