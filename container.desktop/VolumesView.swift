@@ -165,6 +165,13 @@ struct VolumesView: View {
                 volumeListView
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: { showingCreateSheet = true }) {
+                    Label("volumes.create", systemImage: "plus")
+                }
+            }
+        }
         .task {
             await loadVolumes()
         }
@@ -198,11 +205,6 @@ struct VolumesView: View {
             Label("volumes.empty.title", systemImage: "externaldrive.badge.questionmark")
         } description: {
             Text("volumes.empty.description")
-        } actions: {
-            Button(action: { showingCreateSheet = true }) {
-                Text("volumes.empty.createButton")
-            }
-            .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -220,13 +222,6 @@ struct VolumesView: View {
                 }
             }
             .padding(20)
-        }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { showingCreateSheet = true }) {
-                    Label("volumes.create", systemImage: "plus")
-                }
-            }
         }
     }
 
