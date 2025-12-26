@@ -141,6 +141,7 @@ struct VolumesView: View {
     @State private var errorMessage: String?
     @State private var showingCreateSheet: Bool = false
     @State private var newVolumeName: String = ""
+    @State private var newVolumeSize: String = ""
     @State private var newVolumeLabels: [(key: String, value: String)] = []
     @State private var isCreating: Bool = false
     @State private var createError: String?
@@ -244,6 +245,14 @@ struct VolumesView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
+                    Text("volumes.create.size")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextField("volumes.create.sizePlaceholder", text: $newVolumeSize)
+                        .textFieldStyle(.roundedBorder)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         Text("volumes.create.labels")
                             .font(.caption)
@@ -312,6 +321,7 @@ struct VolumesView: View {
                 Button("common.cancel") {
                     showingCreateSheet = false
                     newVolumeName = ""
+                    newVolumeSize = ""
                     newVolumeLabels = []
                     createError = nil
                 }
@@ -356,10 +366,15 @@ struct VolumesView: View {
             let labels = newVolumeLabels
                 .filter { !$0.key.isEmpty }
                 .reduce(into: [String: String]()) { $0[$1.key] = $1.value }
-            _ = try await ClientVolume.create(name: newVolumeName, labels: labels)
+
+            let size = newVolumeSize.isEmpty ? "512M" : newVolumeSize
+            let driverOpts = ["size": size]
+
+            _ = try await ClientVolume.create(name: newVolumeName, driverOpts: driverOpts, labels: labels)
 
             showingCreateSheet = false
             newVolumeName = ""
+            newVolumeSize = ""
             newVolumeLabels = []
             await loadVolumes()
         } catch {

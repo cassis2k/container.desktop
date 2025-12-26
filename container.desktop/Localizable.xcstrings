@@ -1719,6 +1719,40 @@
         }
       }
     },
+    "volumes.create.size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size (optional)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille (optionnel)"
+          }
+        }
+      }
+    },
+    "volumes.create.sizePlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default: 512M"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par défaut : 512M"
+          }
+        }
+      }
+    },
     "volumes.create.title" : {
       "extractionState" : "manual",
       "localizations" : {
