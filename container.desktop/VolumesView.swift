@@ -9,7 +9,6 @@ import ContainerClient
 struct VolumeRow: Identifiable {
     let id: String
     let name: String
-    let format: String
     let sizeInBytes: UInt64?
     let labels: [String: String]
     let isAnonymous: Bool
@@ -23,7 +22,6 @@ struct VolumeRow: Identifiable {
     init(from volume: Volume) {
         self.id = volume.id
         self.name = volume.name
-        self.format = volume.format
         self.sizeInBytes = volume.sizeInBytes
         self.labels = volume.labels
         self.isAnonymous = volume.isAnonymous
@@ -65,26 +63,15 @@ struct VolumeCardView: View {
                         .font(.headline)
                         .lineLimit(1)
 
-                    HStack(spacing: 6) {
-                        Text(volume.format.uppercased())
+                    if volume.isAnonymous {
+                        Text("volumes.anonymous")
                             .font(.caption)
                             .fontWeight(.medium)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.purple.opacity(0.15))
-                            .foregroundStyle(Color.purple)
+                            .background(Color.gray.opacity(0.15))
+                            .foregroundStyle(Color.secondary)
                             .clipShape(Capsule())
-
-                        if volume.isAnonymous {
-                            Text("volumes.anonymous")
-                                .font(.caption)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.gray.opacity(0.15))
-                                .foregroundStyle(Color.secondary)
-                                .clipShape(Capsule())
-                        }
                     }
                 }
 
