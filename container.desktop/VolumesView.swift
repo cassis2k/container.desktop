@@ -9,7 +9,6 @@ import ContainerClient
 struct VolumeRow: Identifiable {
     let id: String
     let name: String
-    let driver: String
     let format: String
     let sizeInBytes: UInt64?
     let labels: [String: String]
@@ -24,7 +23,6 @@ struct VolumeRow: Identifiable {
     init(from volume: Volume) {
         self.id = volume.id
         self.name = volume.name
-        self.driver = volume.driver
         self.format = volume.format
         self.sizeInBytes = volume.sizeInBytes
         self.labels = volume.labels
@@ -68,15 +66,6 @@ struct VolumeCardView: View {
                         .lineLimit(1)
 
                     HStack(spacing: 6) {
-                        Text(volume.driver.uppercased())
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.blue.opacity(0.15))
-                            .foregroundStyle(Color.blue)
-                            .clipShape(Capsule())
-
                         Text(volume.format.uppercased())
                             .font(.caption)
                             .fontWeight(.medium)
