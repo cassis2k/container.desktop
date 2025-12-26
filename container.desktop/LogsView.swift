@@ -249,6 +249,8 @@ struct LogEntryRow: View {
 
     private var levelInfo: (Color, String) {
         switch entry.level {
+        case .undefined:
+            return (.gray, "LOG")
         case .debug:
             return (.gray, "DEBUG")
         case .info:
