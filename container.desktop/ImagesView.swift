@@ -340,8 +340,23 @@ struct ImagesView: View {
 
     private var pullImageSheet: some View {
         VStack(spacing: 16) {
-            Text("images.pull.title")
-                .font(.headline)
+            HStack {
+                Text("images.pull.title")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    showingPullSheet = false
+                    pullImageReference = ""
+                    pullError = nil
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut(.cancelAction)
+            }
+            .frame(width: 350)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("images.pull.reference")
@@ -362,22 +377,13 @@ struct ImagesView: View {
                     .frame(width: 350, alignment: .leading)
             }
 
-            HStack(spacing: 12) {
-                Button("common.cancel") {
-                    showingPullSheet = false
-                    pullImageReference = ""
-                    pullError = nil
+            Button("images.pull.confirm") {
+                Task {
+                    await pullImage()
                 }
-                .keyboardShortcut(.cancelAction)
-
-                Button("images.pull.confirm") {
-                    Task {
-                        await pullImage()
-                    }
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(pullImageReference.isEmpty || isPulling)
             }
+            .keyboardShortcut(.defaultAction)
+            .disabled(pullImageReference.isEmpty || isPulling)
 
             if isPulling {
                 ProgressView()

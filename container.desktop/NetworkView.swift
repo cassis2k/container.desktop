@@ -309,8 +309,25 @@ struct NetworkView: View {
 
     private var createNetworkSheet: some View {
         VStack(spacing: 16) {
-            Text("network.create.title")
-                .font(.headline)
+            HStack {
+                Text("network.create.title")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    showingCreateSheet = false
+                    newNetworkName = ""
+                    newNetworkSubnet = ""
+                    newNetworkLabels = []
+                    createError = nil
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut(.cancelAction)
+            }
+            .frame(width: 350)
 
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -397,24 +414,13 @@ struct NetworkView: View {
                     .frame(width: 350, alignment: .leading)
             }
 
-            HStack(spacing: 12) {
-                Button("common.cancel") {
-                    showingCreateSheet = false
-                    newNetworkName = ""
-                    newNetworkSubnet = ""
-                    newNetworkLabels = []
-                    createError = nil
+            Button("network.create.confirm") {
+                Task {
+                    await createNetwork()
                 }
-                .keyboardShortcut(.cancelAction)
-
-                Button("network.create.confirm") {
-                    Task {
-                        await createNetwork()
-                    }
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(newNetworkName.isEmpty || isCreating)
             }
+            .keyboardShortcut(.defaultAction)
+            .disabled(newNetworkName.isEmpty || isCreating)
         }
         .padding(24)
     }

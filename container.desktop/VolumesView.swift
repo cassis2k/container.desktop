@@ -223,8 +223,25 @@ struct VolumesView: View {
 
     private var createVolumeSheet: some View {
         VStack(spacing: 16) {
-            Text("volumes.create.title")
-                .font(.headline)
+            HStack {
+                Text("volumes.create.title")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    showingCreateSheet = false
+                    newVolumeName = ""
+                    newVolumeSize = ""
+                    newVolumeLabels = []
+                    createError = nil
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut(.cancelAction)
+            }
+            .frame(width: 350)
 
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -308,24 +325,13 @@ struct VolumesView: View {
                     .frame(width: 350, alignment: .leading)
             }
 
-            HStack(spacing: 12) {
-                Button("common.cancel") {
-                    showingCreateSheet = false
-                    newVolumeName = ""
-                    newVolumeSize = ""
-                    newVolumeLabels = []
-                    createError = nil
+            Button("volumes.create.confirm") {
+                Task {
+                    await createVolume()
                 }
-                .keyboardShortcut(.cancelAction)
-
-                Button("volumes.create.confirm") {
-                    Task {
-                        await createVolume()
-                    }
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(newVolumeName.isEmpty || isCreating)
             }
+            .keyboardShortcut(.defaultAction)
+            .disabled(newVolumeName.isEmpty || isCreating)
         }
         .padding(24)
     }
