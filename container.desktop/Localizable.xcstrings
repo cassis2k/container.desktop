@@ -75,36 +75,19 @@
         }
       }
     },
-    "containers.empty.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "It's quiet... too quiet. Time to spin up some containers!"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "C'est calme... trop calme. Il est temps de lancer quelques conteneurs !"
-          }
-        }
-      }
-    },
     "containers.empty.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No containers running"
+            "value" : "No containers yet"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun conteneur en cours"
+            "value" : "Aucun conteneur pour l'instant"
           }
         }
       }
@@ -308,6 +291,23 @@
         }
       }
     },
+    "images.empty.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No images yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune image pour l'instant"
+          }
+        }
+      }
+    },
     "images.noImage" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -321,6 +321,91 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucune image"
+          }
+        }
+      }
+    },
+    "images.pull" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull Image"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécharger une image"
+          }
+        }
+      }
+    },
+    "images.pull.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécharger"
+          }
+        }
+      }
+    },
+    "images.pull.placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. alpine:latest"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ex. alpine:latest"
+          }
+        }
+      }
+    },
+    "images.pull.reference" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image reference"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Référence de l'image"
+          }
+        }
+      }
+    },
+    "images.pull.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull a new image"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécharger une nouvelle image"
           }
         }
       }
@@ -1447,6 +1532,108 @@
         }
       }
     },
+    "settings.section.service" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service"
+          }
+        }
+      }
+    },
+    "settings.service.debug" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug mode"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode débogage"
+          }
+        }
+      }
+    },
+    "settings.service.debug.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable debug logging for the container service. Takes effect on next restart."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer les journaux de débogage pour le service conteneur. Prend effet au prochain redémarrage."
+          }
+        }
+      }
+    },
+    "settings.service.restart.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart Service"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrer le service"
+          }
+        }
+      }
+    },
+    "settings.service.restart.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will restart the container service. All running containers will be stopped."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela redémarrera le service conteneur. Tous les conteneurs en cours d'exécution seront arrêtés."
+          }
+        }
+      }
+    },
+    "settings.service.restart.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart Required"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrage requis"
+          }
+        }
+      }
+    },
     "settings.unableToRetrieve" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1838,36 +2025,19 @@
         }
       }
     },
-    "volumes.empty.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No volumes here... Your data is living dangerously in ephemeral containers!"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun volume ici... Vos données vivent dangereusement dans des conteneurs éphémères !"
-          }
-        }
-      }
-    },
     "volumes.empty.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No volumes"
+            "value" : "No volumes yet"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun volume"
+            "value" : "Aucun volume pour l'instant"
           }
         }
       }

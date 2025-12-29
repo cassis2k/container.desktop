@@ -201,12 +201,8 @@ struct VolumesView: View {
     }
 
     private var emptyStateView: some View {
-        ContentUnavailableView {
-            Label("volumes.empty.title", systemImage: "externaldrive.badge.questionmark")
-        } description: {
-            Text("volumes.empty.description")
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        ContentUnavailableView("volumes.empty.title", systemImage: "externaldrive.badge.xmark")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var volumeListView: some View {

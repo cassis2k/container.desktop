@@ -73,7 +73,7 @@ struct ContainerService {
 
     // MARK: - Private Process Execution
 
-    private static func executeProcess(arguments: [String]) async -> Result<(output: String, exitCode: Int32), ContainerServiceError> {
+    private static func executeProcess(arguments: [String], environment: [String: String]? = nil) async -> Result<(output: String, exitCode: Int32), ContainerServiceError> {
         guard isInstalled else {
             logger.warning("Container CLI not found at \(containerPath)")
             return .failure(.serviceNotInstalled)
@@ -87,6 +87,15 @@ struct ContainerService {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: executablePath)
             process.arguments = arguments
+
+            // Set environment variables if provided
+            if let environment {
+                var processEnv = ProcessInfo.processInfo.environment
+                for (key, value) in environment {
+                    processEnv[key] = value
+                }
+                process.environment = processEnv
+            }
 
             let pipe = Pipe()
             process.standardOutput = pipe
@@ -233,8 +242,8 @@ struct ContainerService {
 
     // MARK: - Public Command Execution
 
-    static func runCommand(arguments: [String]) async -> Result<String, ContainerServiceError> {
-        let result = await executeProcess(arguments: arguments)
+    static func runCommand(arguments: [String], environment: [String: String]? = nil) async -> Result<String, ContainerServiceError> {
+        let result = await executeProcess(arguments: arguments, environment: environment)
 
         switch result {
         case .success(let (output, exitCode)):
@@ -246,5 +255,40 @@ struct ContainerService {
         case .failure(let error):
             return .failure(error)
         }
+    }
+
+    // MARK: - Service Control
+
+    static func startService(debug: Bool = false, appRoot: String? = nil, installRoot: String? = nil) async -> Result<String, ContainerServiceError> {
+        var arguments = ["system", "start"]
+        if let appRoot, !appRoot.isEmpty {
+            arguments.append(contentsOf: ["--app-root", appRoot])
+        }
+        if let installRoot, !installRoot.isEmpty {
+            arguments.append(contentsOf: ["--install-root", installRoot])
+        }
+
+        var environment: [String: String]?
+        if debug {
+            environment = ["CONTAINER_DEBUG": "1"]
+        }
+
+        return await runCommand(arguments: arguments, environment: environment)
+    }
+
+    static func stopService() async -> Result<String, ContainerServiceError> {
+        await runCommand(arguments: ["system", "stop"])
+    }
+
+    static func restartService(debug: Bool = false, appRoot: String? = nil, installRoot: String? = nil) async -> Result<String, ContainerServiceError> {
+        let stopResult = await stopService()
+        if case .failure(let error) = stopResult {
+            logger.warning("Stop service failed (may already be stopped): \(error.localizedDescription)")
+        }
+
+        // Wait a bit for the service to fully stop
+        try? await Task.sleep(for: .milliseconds(500))
+
+        return await startService(debug: debug, appRoot: appRoot, installRoot: installRoot)
     }
 }

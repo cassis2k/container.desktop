@@ -31,8 +31,8 @@ enum NavigationSection: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .containers: return "shippingbox"
-        case .images: return "list.bullet.rectangle"
-        case .volumes: return "square.stack.3d.up"
+        case .images: return "square.3.layers.3d"
+        case .volumes: return "externaldrive"
         case .network: return "link"
         case .logs: return "doc.text"
         case .settings: return "gearshape"

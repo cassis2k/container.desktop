@@ -34,6 +34,11 @@ final class SettingsViewModel {
     var latestVersion: String = ""
     var updateAvailable: Bool = false
 
+    // Service control
+    var debugMode: Bool = false
+    var isRestarting: Bool = false
+    var serviceError: String?
+
     func loadSettings() async {
         loadPropertyList()
         await loadSystemStatus()
@@ -80,6 +85,31 @@ final class SettingsViewModel {
 
     func saveBoolProperty(key: DefaultsStore.Keys, value: Bool) {
         DefaultsStore.setBool(value: value, key: key)
+    }
+
+    func restartService() async {
+        isRestarting = true
+        serviceError = nil
+
+        // Only pass paths that are valid (start with /)
+        let validAppRoot = appDataRoot.hasPrefix("/") ? appDataRoot : nil
+        let validInstallRoot = appInstallRoot.hasPrefix("/") ? appInstallRoot : nil
+
+        let result = await ContainerService.restartService(
+            debug: debugMode,
+            appRoot: validAppRoot,
+            installRoot: validInstallRoot
+        )
+
+        switch result {
+        case .success:
+            // Reload status after restart
+            await loadSystemStatus()
+        case .failure(let error):
+            serviceError = error.localizedDescription
+        }
+
+        isRestarting = false
     }
 }
 
@@ -201,6 +231,8 @@ struct SettingRow<Content: View>: View {
 
 struct SettingsView: View {
     @State private var viewModel = SettingsViewModel()
+    @State private var showRestartConfirmation = false
+    @State private var pendingDebugMode = false
 
     var body: some View {
         Form {
@@ -237,6 +269,29 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .truncationMode(.middle)
+                }
+            }
+
+            Section("settings.section.service") {
+                SettingRow(
+                    title: "settings.service.debug",
+                    description: viewModel.serviceError != nil
+                        ? LocalizedStringKey(viewModel.serviceError!)
+                        : "settings.service.debug.description"
+                ) {
+                    if viewModel.isRestarting {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Toggle("", isOn: Binding(
+                            get: { viewModel.debugMode },
+                            set: { newValue in
+                                pendingDebugMode = newValue
+                                showRestartConfirmation = true
+                            }
+                        ))
+                        .labelsHidden()
+                    }
                 }
             }
 
@@ -325,6 +380,17 @@ struct SettingsView: View {
         .frame(minWidth: 500, minHeight: 600)
         .task {
             await viewModel.loadSettings()
+        }
+        .alert("settings.service.restart.title", isPresented: $showRestartConfirmation) {
+            Button("common.cancel", role: .cancel) { }
+            Button("settings.service.restart.confirm", role: .destructive) {
+                viewModel.debugMode = pendingDebugMode
+                Task {
+                    await viewModel.restartService()
+                }
+            }
+        } message: {
+            Text("settings.service.restart.message")
         }
     }
 }

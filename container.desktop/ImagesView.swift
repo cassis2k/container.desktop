@@ -236,6 +236,10 @@ struct ImagesView: View {
     @SwiftUI.State private var isLoading: Bool = true
     @SwiftUI.State private var errorMessage: String?
     @SwiftUI.State private var imageToDelete: ImageRow?
+    @SwiftUI.State private var showingPullSheet: Bool = false
+    @SwiftUI.State private var pullImageReference: String = ""
+    @SwiftUI.State private var isPulling: Bool = false
+    @SwiftUI.State private var pullError: String?
 
     private let columns = [
         GridItem(.adaptive(minimum: 320, maximum: 450), spacing: 16)
@@ -250,7 +254,7 @@ struct ImagesView: View {
                 ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if images.isEmpty {
-                ContentUnavailableView("images.noImage", systemImage: "photo.stack")
+                ContentUnavailableView("images.empty.title", systemImage: "square.3.layers.3d.slash")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
@@ -268,8 +272,18 @@ struct ImagesView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: { showingPullSheet = true }) {
+                    Label("images.pull", systemImage: "plus")
+                }
+            }
+        }
         .task {
             await loadImages()
+        }
+        .sheet(isPresented: $showingPullSheet) {
+            pullImageSheet
         }
         .alert("images.delete.title", isPresented: .init(
             get: { imageToDelete != nil },
@@ -322,6 +336,74 @@ struct ImagesView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private var pullImageSheet: some View {
+        VStack(spacing: 16) {
+            Text("images.pull.title")
+                .font(.headline)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("images.pull.reference")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                TextField("images.pull.placeholder", text: $pullImageReference)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 350)
+            }
+            .onChange(of: pullImageReference) {
+                pullError = nil
+            }
+
+            if let error = pullError {
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .frame(width: 350, alignment: .leading)
+            }
+
+            HStack(spacing: 12) {
+                Button("common.cancel") {
+                    showingPullSheet = false
+                    pullImageReference = ""
+                    pullError = nil
+                }
+                .keyboardShortcut(.cancelAction)
+
+                Button("images.pull.confirm") {
+                    Task {
+                        await pullImage()
+                    }
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(pullImageReference.isEmpty || isPulling)
+            }
+
+            if isPulling {
+                ProgressView()
+                    .controlSize(.small)
+            }
+        }
+        .padding(24)
+    }
+
+    @MainActor
+    private func pullImage() async {
+        guard !pullImageReference.isEmpty else { return }
+
+        isPulling = true
+        pullError = nil
+
+        do {
+            _ = try await ClientImage.pull(reference: pullImageReference)
+            showingPullSheet = false
+            pullImageReference = ""
+            await loadImages()
+        } catch {
+            pullError = error.localizedDescription
+        }
+
+        isPulling = false
     }
 }
 

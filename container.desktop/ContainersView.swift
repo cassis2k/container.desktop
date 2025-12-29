@@ -11,8 +11,7 @@ struct ContainersView: View {
     var body: some View {
         ContentUnavailableView {
             Label("containers.empty.title", systemImage: "shippingbox")
-        } description: {
-            Text("containers.empty.description")
+                .fixedSize(horizontal: true, vertical: false)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
