@@ -5,6 +5,7 @@
 
 import SwiftUI
 import ContainerClient
+import ContainerPersistence
 internal import ContainerizationOCI
 
 struct ImageRow: Identifiable {
@@ -245,6 +246,11 @@ struct ImagesView: View {
         GridItem(.adaptive(minimum: 320, maximum: 450), spacing: 16)
     ]
 
+    private var configuredRegistry: String {
+        let registry = DefaultsStore.get(key: .defaultRegistryDomain)
+        return registry.isEmpty ? "docker.io" : registry
+    }
+
     var body: some View {
         Group {
             if isLoading {
@@ -365,6 +371,9 @@ struct ImagesView: View {
                 TextField("images.pull.placeholder", text: $pullImageReference)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 350)
+                Label("images.pull.registry \(configuredRegistry)", systemImage: "server.rack")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
             .onChange(of: pullImageReference) {
                 pullError = nil

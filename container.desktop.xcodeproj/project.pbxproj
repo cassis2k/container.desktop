@@ -24,7 +24,7 @@
 /* Begin PBXFileReference section */
 		B00A5ADF2ECB8C8E005FF512 /* container.desktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = container.desktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B05DEC172EFAEE3000FA4749 /* container.desktopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = container.desktopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B05DEC282EFAFF9A00FA4749 /* container.desktop.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = container.desktop.xctestplan; sourceTree = "<group>"; };
+		B05DEC282EFAFF9A00FA4749 /* container.desktop.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = container.desktop.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */

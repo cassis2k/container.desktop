@@ -21,8 +21,6 @@ Container.desktop provides a graphical interface for Apple [container](https://g
 - [Apple container](https://github.com/apple/container) **v0.7.1** or later installed and running
 - Xcode 26 (for building from source)
 
-> **Note**: The application automatically checks for new versions of Apple Container by querying the GitHub API. This helps you stay up to date with the latest features and security fixes.
-
 ## Installation
 
 ### From Source
