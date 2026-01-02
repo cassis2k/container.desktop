@@ -95,10 +95,6 @@ struct ContentView: View {
                     Text("navigation.selectItem")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-
-                Divider()
-
-                StatusBarView()
             }
         }
     }

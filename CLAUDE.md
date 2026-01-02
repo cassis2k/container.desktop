@@ -42,7 +42,6 @@ Key dependencies:
 - `ImagesView.swift` - Container images management (list, pull, delete)
 - `SettingsView.swift` - Application settings and configuration
 - `LogsView.swift` - System logs display
-- `StatusBarView.swift` - Service status indicator
 
 ### Build Settings
 

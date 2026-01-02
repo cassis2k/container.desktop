@@ -393,6 +393,23 @@
         }
       }
     },
+    "images.pull.registry %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registry: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registre : %@"
+          }
+        }
+      }
+    },
     "images.pull.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1698,57 +1715,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mise à jour disponible : %@"
-          }
-        }
-      }
-    },
-    "status.notInstalled" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Container not installed"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Container non installé"
-          }
-        }
-      }
-    },
-    "status.running" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Container service running"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Service conteneur en cours d'exécution"
-          }
-        }
-      }
-    },
-    "status.stopped" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Container service stopped"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Service conteneur arrêté"
           }
         }
       }
