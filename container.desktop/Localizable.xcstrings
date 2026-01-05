@@ -75,6 +75,23 @@
         }
       }
     },
+    "copy.url" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy URL"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier l'URL"
+          }
+        }
+      }
+    },
     "containers.empty.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1715,6 +1732,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mise à jour disponible : %@"
+          }
+        }
+      }
+    },
+    "service.notInstalled.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Container is not installed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Container n'est pas installé"
+          }
+        }
+      }
+    },
+    "service.notInstalled.action" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install Apple Container"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer Apple Container"
+          }
+        }
+      }
+    },
+    "service.stopped.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Container service stopped"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service conteneur arrêté"
+          }
+        }
+      }
+    },
+    "service.stopped.action" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Service"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer le service"
           }
         }
       }
