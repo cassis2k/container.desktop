@@ -152,28 +152,30 @@ struct VolumesView: View {
     ]
 
     var body: some View {
-        Group {
-            if isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = errorMessage {
-                ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if volumes.isEmpty {
-                emptyStateView
-            } else {
-                volumeListView
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { showingCreateSheet = true }) {
-                    Label("volumes.create", systemImage: "plus")
+        ServiceStatusView {
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = errorMessage {
+                    ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if volumes.isEmpty {
+                    emptyStateView
+                } else {
+                    volumeListView
                 }
             }
-        }
-        .task {
-            await loadVolumes()
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: { showingCreateSheet = true }) {
+                        Label("volumes.create", systemImage: "plus")
+                    }
+                }
+            }
+            .task {
+                await loadVolumes()
+            }
         }
         .sheet(isPresented: $showingCreateSheet) {
             createVolumeSheet

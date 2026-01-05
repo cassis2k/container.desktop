@@ -252,41 +252,43 @@ struct ImagesView: View {
     }
 
     var body: some View {
-        Group {
-            if isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = errorMessage {
-                ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if images.isEmpty {
-                ContentUnavailableView("images.empty.title", systemImage: "square.3.layers.3d.slash")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(images) { image in
-                            ImageCardView(
-                                image: image,
-                                onDelete: {
-                                    imageToDelete = image
-                                }
-                            )
+        ServiceStatusView {
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = errorMessage {
+                    ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if images.isEmpty {
+                    ContentUnavailableView("images.empty.title", systemImage: "square.3.layers.3d.slash")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(images) { image in
+                                ImageCardView(
+                                    image: image,
+                                    onDelete: {
+                                        imageToDelete = image
+                                    }
+                                )
+                            }
                         }
+                        .padding(20)
                     }
-                    .padding(20)
                 }
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { showingPullSheet = true }) {
-                    Label("images.pull", systemImage: "plus")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: { showingPullSheet = true }) {
+                        Label("images.pull", systemImage: "plus")
+                    }
                 }
             }
-        }
-        .task {
-            await loadImages()
+            .task {
+                await loadImages()
+            }
         }
         .sheet(isPresented: $showingPullSheet) {
             pullImageSheet

@@ -235,8 +235,9 @@ struct SettingsView: View {
     @State private var pendingDebugMode = false
 
     var body: some View {
-        Form {
-            Section("settings.section.application") {
+        ServiceStatusView {
+            Form {
+                Section("settings.section.application") {
                 SettingRow(
                     title: "settings.version",
                     description: viewModel.updateAvailable
@@ -375,11 +376,12 @@ struct SettingsView: View {
                     viewModel.saveProperty(key: .defaultKernelBinaryPath, value: newValue)
                 }
             }
-        }
-        .formStyle(.grouped)
-        .frame(minWidth: 500, minHeight: 600)
-        .task {
-            await viewModel.loadSettings()
+            }
+            .formStyle(.grouped)
+            .frame(minWidth: 500, minHeight: 600)
+            .task {
+                await viewModel.loadSettings()
+            }
         }
         .alert("settings.service.restart.title", isPresented: $showRestartConfirmation) {
             Button("common.cancel", role: .cancel) { }

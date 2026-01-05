@@ -9,11 +9,13 @@ struct ContainersView: View {
     // TODO: Implement container listing when ContainerClient API is available
 
     var body: some View {
-        ContentUnavailableView {
-            Label("containers.empty.title", systemImage: "shippingbox")
-                .fixedSize(horizontal: true, vertical: false)
+        ServiceStatusView {
+            ContentUnavailableView {
+                Label("containers.empty.title", systemImage: "shippingbox")
+                    .fixedSize(horizontal: true, vertical: false)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

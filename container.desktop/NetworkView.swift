@@ -229,21 +229,23 @@ struct NetworkView: View {
     ]
 
     var body: some View {
-        Group {
-            if isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let error = errorMessage {
-                ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if networks.isEmpty {
-                emptyStateView
-            } else {
-                networkListView
+        ServiceStatusView {
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = errorMessage {
+                    ContentUnavailableView("common.error", systemImage: "exclamationmark.triangle", description: Text(error))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if networks.isEmpty {
+                    emptyStateView
+                } else {
+                    networkListView
+                }
             }
-        }
-        .task {
-            await loadNetworks()
+            .task {
+                await loadNetworks()
+            }
         }
         .sheet(isPresented: $showingCreateSheet) {
             createNetworkSheet
