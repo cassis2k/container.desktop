@@ -45,7 +45,7 @@ Key dependencies:
 
 ### Build Settings
 
-- Target: macOS 15.0+
+- Target: macOS 26.0+
 - **Swift 6** with strict concurrency checking
 - Hardened Runtime enabled (App Sandbox disabled for container runtime access)
 
